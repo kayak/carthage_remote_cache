@@ -7,10 +7,6 @@ platforms:
 
 dependencies:
     - dependency:
-        name: github "Alamofire/Alamofire"
-        frameworks:
-            - Alamofire
-    - dependency:
         name: github "CocoaLumberjack/CocoaLumberjack"
         frameworks:
             - CocoaLumberjack

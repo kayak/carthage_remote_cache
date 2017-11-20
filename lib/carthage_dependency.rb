@@ -26,7 +26,8 @@ class CarthageDependency
     def framework_names(config)
         names = config.mapped_framework_names(@repository)
         if names.nil?
-            @repository.split("/").last
+            name = @repository.split("/").last
+            [name]
         else
             names
         end

@@ -27,9 +27,9 @@ class CarthageArchive
         binary_path = "#{framework_path}/#{@framework_name}"
         bcsymbolmap_paths = find_bcsymbolmap_paths(platform_path, binary_path)
 
-        raise "Directory #{framework_path} doesn't exist" unless Dir.exist? framework_path
-        raise "File #{dsym_path} doesn't exist" unless File.exist? dsym_path
-        raise "File #{binary_path} doesn't exit" unless File.exist? binary_path
+        raise "Directory #{framework_path} is missing. If framework name doesn't match repository, please add mapping via Cartrcfile" unless Dir.exist? framework_path
+        raise "File #{dsym_path} is missing" unless File.exist? dsym_path
+        raise "File #{binary_path} is missing, failed to read .bcsymbolmap files" unless File.exist? binary_path
 
         puts framework_path if options[:verbose]
         puts dsym_path if options[:verbose]
