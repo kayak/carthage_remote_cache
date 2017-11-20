@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
-require 'rest-client'
-require_relative 'lib/Configuration'
-require_relative 'lib/utils'
+require_relative '../lib/carthage_archive'
+require_relative '../lib/configuration'
+require_relative '../lib/server_api'
+require_relative '../lib/utils'
 
 ARGV << '-h' if ARGV.empty?
 options = {
@@ -30,80 +31,26 @@ end
 opt_parser.parse!
 
 config = Configuration.new(options)
-
-class ServerAPI
-    def initialize(config, options)
-        @config = config
-        @options = options
-    end
-
-    def framework_exists(carthage_dependency)
-        url = frameworkURL(carthage_dependency)
-        response = RestClient.head(url) { |response, request, result| response }
-        if response.code == 404
-            puts "Response is 404, we should upload"
-            true
-        else
-            puts "Don't care about other response codes"
-            false
-        end
-    end
-
-    private def frameworkURL(carthage_dependency)
-        ""
-    end
-end
+api = ServerAPI.new(config, options)
 
 command = ARGV[0]
 case command
 when "config"
     puts config
 when "upload"
-    # Let's assume we are sending all frameworks...
-    framework_names = config.framework_names
-    puts "All framework names: #{framework_names}" if options[:verbose]
-
-    for framework_name in framework_names
-        for platform in config.platforms
-            platform_path = "Carthage/Build/#{platform}"
-            puts "Archiving #{framework_name} in #{platform}" if options[:verbose]
-            # Alamofire.framework
-            # Alamofire.framework/Alamofire
-            framework_path = "#{platform_path}/#{framework_name}.framework"
-            raise "directory #{framework_path} doesn't exist" unless Dir.exist? framework_path
-            dsym_path = "#{platform_path}/#{framework_name}.framework.dSYM"
-            raise "File #{dsym_path} doesn't exist" unless File.exist? dsym_path
-            binary_path = "#{framework_path}/#{framework_name}"
-            raise "File #{binary_path} doesn't exit" unless File.exist? binary_path
-            dwarfdump = sh("/usr/bin/xcrun dwarfdump --uuid \"#{binary_path}\"")
-            # UUID: 618BEB79-4C7F-3692-B140-131FB983AC5E (i386) Carthage/Build/iOS/CocoaLumberjackSwift.framework/CocoaLumberjackSwift
-            uuids = dwarfdump.split("\n").map { |line| line[/^UUID: ([A-Z0-9\-]+)\s+\(.*$/, 1] }.compact
-            bcsymbolmap_paths = uuids.map { |uuid| "#{platform_path}/#{uuid}.bcsymbolmap" }.select { |path| File.exist?(path) }
-
-            puts framework_path if options[:verbose]
-            puts dsym_path if options[:verbose]
-            puts bcsymbolmap_paths if options[:verbose]
-
-            zipfile_name = "#{framework_name}-#{platform}.zip"
-            File.delete(zipfile_name)
-            sh("zip -r #{quote zipfile_name} #{quote framework_path} #{quote dsym_path} #{quote bcsymbolmap_paths}")
-            puts "#{zipfile_name} #{File.size zipfile_name}" if options[:verbose]
-
-            # TODO '/frameworks/:xcodebuild_version/:swift_version/:platform/:name/:repository/:version'
-            url = "#{config.server}/framework"
-
-            response = RestClient.head(url) { |response, request, result| response }
-            if response.code == 404
-                puts "Response is 404, we should upload"
-
-                RestClient.post(url, :framework => File.new(zipfile_name))
-                # uri = URI::HTTP.build(:host => "www.google.com", :query => { :q => "test" }.to_query)
-                puts "Posted"
-            else
-                puts "Don't care about other response codes"
+    puts "All framework names: #{config.framework_names}" if options[:verbose]
+    for carthage_dependency in config.carthage_dependencies
+        for framework_name in carthage_dependency.framework_names(config)
+            for platform in config.platforms
+                next if api.framework_exists(carthage_dependency, framework_name, platform)
+                archive = CarthageArchive.new(framework_name, platform)
+                archive.create_archive(options)
+                begin
+                    api.upload_framework(archive.archive_path, carthage_dependency, framework_name, platform)
+                ensure
+                    archive.delete_archive
+                end
             end
-
-            puts '---' if options[:verbose]
         end
     end
 else

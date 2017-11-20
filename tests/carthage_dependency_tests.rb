@@ -1,5 +1,6 @@
 require 'test/unit'
-require_relative '../lib/CarthageDependency'
+require_relative '../lib/carthage_dependency'
+require_relative '../lib/configuration'
 
 class CarthageDependencyTests < Test::Unit::TestCase
     def test_parse_exact
@@ -14,5 +15,11 @@ class CarthageDependencyTests < Test::Unit::TestCase
         assert_equal 'github', d.type
         assert_equal 'yada/lada', d.repository
         assert_equal nil, d.version
+    end
+
+    def test_framework_names
+        # TODO
+        # d = CarthageDependency.new(type: 'github', repository: 'yada/lada', version: '1.2.3')
+        # d.framework_names
     end
 end

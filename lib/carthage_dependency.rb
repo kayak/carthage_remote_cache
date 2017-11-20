@@ -26,8 +26,6 @@ class CarthageDependency
     def framework_names(config)
         names = config.mapped_framework_names(@repository)
         if names.nil?
-            puts @type
-            puts @repository
             @repository.split("/").last
         else
             names

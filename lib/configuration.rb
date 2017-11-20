@@ -1,10 +1,10 @@
 require 'yaml'
-require_relative 'CarthageDependency'
+require_relative 'carthage_dependency'
 require_relative 'utils'
 
 class Configuration
 
-    attr_reader :server, :platforms
+    attr_reader :xcodebuild_version, :swift_version, :carthage_dependencies, :server, :platforms
 
     def initialize(options)
         initialize_env
@@ -21,10 +21,9 @@ class Configuration
         raise "Could not parse swift version from '#{raw_swift_version}'" if @swift_version.nil?
 
         raise "Misssing Cartfile.resolved" unless File.exists?('Cartfile.resolved')
-        @dependencies = File.readlines("Cartfile.resolved")
+        @carthage_dependencies = File.readlines("Cartfile.resolved")
             .map { |line| CarthageDependency.parse(line) }
             .compact
-
     end
 
     def initialize_cartrcfile(options)
@@ -50,7 +49,7 @@ class Configuration
     end
 
     def framework_names
-        @dependencies
+        @carthage_dependencies
             .map { |d| d.framework_names(self) }
             .flatten
     end
@@ -62,7 +61,7 @@ class Configuration
             Swift: #{@swift_version}
             ---
             Cartfile.resolved:
-            #{@dependencies.join("\n")}
+            #{@carthage_dependencies.join("\n")}
             ---
             Platforms: #{@platforms}
         EOS
