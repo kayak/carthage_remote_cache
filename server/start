@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rerun --no-notify rackup
