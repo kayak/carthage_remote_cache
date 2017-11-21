@@ -14,8 +14,14 @@ opt_parser = OptionParser.new do |opt|
     opt.banner = "carthage-rc COMMAND [OPTIONS]"
     opt.separator ""
     opt.separator "Available commands:"
-    opt.separator "    config: prints environment and Cartrcfile configuration"
-    opt.separator "    upload: archive frameworks in Carthage/Build and upload them to the server"
+    opt.separator "    config"
+    opt.separator "        prints environment and Cartrcfile configuration"
+    opt.separator ""
+    opt.separator "    list-built-frameworks"
+    opt.separator "        find frameworks which are available for upload"
+    opt.separator ""
+    opt.separator "    upload"
+    opt.separator "        archive frameworks in Carthage/Build and upload them to the server"
     opt.separator ""
 
     opt.on("-h", "--help", "Show help") do
@@ -37,6 +43,10 @@ command = ARGV[0]
 case command
 when "config"
     puts config
+when "list-built-frameworks"
+    frameworks = Dir.glob('Carthage/Build/**/*.framework').map { |path| File.basename(path) }
+    puts "Found following frameworks:"
+    puts frameworks.uniq.sort
 when "upload"
     puts "All framework names: #{config.framework_names}" if options[:verbose]
     for carthage_dependency in config.carthage_dependencies
