@@ -43,7 +43,7 @@ command = ARGV[0]
 case command
 when "config"
     puts config
-when "list-built-frameworks"
+when "list-build-frameworks"
     frameworks = Dir.glob('Carthage/Build/**/*.framework').map { |path| File.basename(path) }
     puts "Found following frameworks:"
     puts frameworks.uniq.sort
@@ -54,7 +54,8 @@ when "upload"
             for platform in config.platforms
                 next if api.framework_exists(carthage_dependency, framework_name, platform)
                 archive = CarthageArchive.new(framework_name, platform)
-                archive.create_archive(options)
+                archive_created = archive.create_archive(options)
+                next unless archive_created
                 begin
                     api.upload_framework(archive.archive_path, carthage_dependency, framework_name, platform)
                 ensure

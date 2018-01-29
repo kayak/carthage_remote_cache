@@ -28,13 +28,13 @@ class Configuration
 
     def initialize_cartrcfile(options)
         raise "Misssing Cartrcfile" unless File.exists?('Cartrcfile')
-        main = YAML.load_file('Cartrcfile')
-        puts "Cartrcfile: #{main.inspect}" if options[:verbose]
+        cartrcfile = YAML.load_file('Cartrcfile')
+        puts "Cartrcfile: #{cartrcfile.inspect}" if options[:verbose]
 
-        @server = main['server']
+        @server = cartrcfile['server']
         raise "Missing 'server' configuration in Cartrcfile" if @server.nil?
 
-        @platforms = main['platforms'] || ['iOS', 'macOS', 'tvOS', 'watchOS']
+        @platforms = cartrcfile['platforms'] || ['iOS', 'macOS', 'tvOS', 'watchOS']
 
         @repository_to_framework_names = {}
         main['dependencies'].each do |item|
