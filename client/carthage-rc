@@ -48,9 +48,9 @@ when "list-build-frameworks"
     puts "Found following frameworks:"
     puts frameworks.uniq.sort
 when "upload"
-    puts "All framework names: #{config.framework_names}" if options[:verbose]
+    puts "All framework names: #{config.all_framework_names}" if options[:verbose]
     for carthage_dependency in config.carthage_dependencies
-        for framework_name in carthage_dependency.framework_names(config)
+        for framework_name in carthage_dependency.produced_framework_names(config)
             for platform in config.platforms
                 next if api.framework_exists(carthage_dependency, framework_name, platform)
                 archive = CarthageArchive.new(framework_name, platform)

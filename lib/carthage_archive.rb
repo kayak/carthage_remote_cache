@@ -8,7 +8,7 @@ class CarthageArchive
         @framework_name = framework_name
         @platform = platform
         @archive_filename = "#{framework_name}-#{platform}.zip"
-        @archive_path = @archive_filename
+        @archive_path = @archive_filename # TODO /tmp/...?
     end
 
     # Aggregate following files:
