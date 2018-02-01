@@ -1,6 +1,4 @@
 require 'yaml'
-require_relative 'carthage_dependency'
-require_relative 'utils'
 
 class Configuration
 

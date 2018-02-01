@@ -1,5 +1,6 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gem 'rerun'
-gem 'rest-client'
-gem 'sinatra'
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
+
+# Specify your gem's dependencies in carthage_remote_cache.gemspec
+gemspec

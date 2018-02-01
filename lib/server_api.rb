@@ -1,5 +1,4 @@
 require 'rest-client'
-require_relative 'configuration'
 
 class ServerAPI
 
@@ -11,9 +10,9 @@ class ServerAPI
     def framework_exists(carthage_dependency, framework_name, platform)
         url = framework_url(carthage_dependency,framework_name, platform)
         puts "API: Checking if framework exists via #{url}" if @options[:verbose]
-        response = RestClient.head(url) { |response, request, result| response }
+        response_code = RestClient.head(url) { |response, request, result| response.code }
         # TODO use response JSON instead of codes.
-        exists = response.code == 200
+        exists = response_code == 200
         puts "API: Framework exists: #{exists}" if @options[:verbose]
         exists
     end

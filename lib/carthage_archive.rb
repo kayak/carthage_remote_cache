@@ -1,5 +1,3 @@
-require_relative 'utils'
-
 class CarthageArchive
 
     attr_reader :archive_filename, :archive_path

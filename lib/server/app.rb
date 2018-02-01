@@ -1,9 +1,9 @@
 require 'sinatra'
 require 'fileutils'
-require_relative '../lib/carthage_archive'
+require 'carthage_remote_cache'
 
 get '/' do
-    "Root, will list all frameworks and versions"
+    "Welcome to carthage_remote_cache"
 end
 
 # Check whether framework archive is already cached.

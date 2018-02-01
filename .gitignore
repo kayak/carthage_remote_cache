@@ -1,3 +1,5 @@
 Carthage/
 .idea
+*.gem
+*.DS_Store
 private_notes.txt

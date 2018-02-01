@@ -1,6 +1,5 @@
 require 'test/unit'
-require_relative '../lib/carthage_dependency'
-require_relative '../lib/configuration'
+require 'carthage_remote_cache'
 
 class CarthageDependencyTests < Test::Unit::TestCase
 
@@ -14,11 +13,6 @@ class CarthageDependencyTests < Test::Unit::TestCase
     def test_parse_without_version
         d = CarthageDependency.parse_cartfile_resolved_line('github "yada/lada"')
         assert_equal(nil, d)
-    end
-
-    def test_framework_names
-        # TODO
-        # d = CarthageDependency.new(type: 'github', repository: 'yada/lada', version: '1.2.3')
     end
 
 end
