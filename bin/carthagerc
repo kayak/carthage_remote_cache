@@ -50,11 +50,7 @@ opt_parser.parse!
 command = ARGV[0]
 case command
 when "server"
-    require 'server/server_app'
-    Rack::Handler::WEBrick.run(
-        Sinatra::Application,
-        :Port => options[:server_port]
-    )
+    ServerCommand.new(options).run
 when "config"
     config = Configuration.new(options)
     api = ServerAPI.new(config, options)
