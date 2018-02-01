@@ -64,26 +64,7 @@ when "list-build-frameworks"
     puts "Found following frameworks:"
     puts frameworks.uniq.sort
 when "download"
-    config = Configuration.new(options)
-    api = ServerAPI.new(config, options)
-
-    number_of_downloaded_archives = 0
-    for carthage_dependency in config.carthage_dependencies
-        for framework_name in carthage_dependency.produced_framework_names(config)
-            for platform in config.platforms
-                puts '---' if options[:verbose]
-                archive = api.download_framework(carthage_dependency, framework_name, platform)
-                begin
-                    puts "Downloaded #{archive.archive_path}" if options[:verbose]
-                    number_of_downloaded_archives += 1
-                    archive.unpack_archive(options)
-                ensure
-                    archive.delete_archive
-                end
-            end
-        end
-    end
-    puts "Downloaded and extracted #{number_of_downloaded_archives} archives."
+    DownloadCommand.new(options).run
 when "upload"
     UploadCommand.new(options).run
 else
