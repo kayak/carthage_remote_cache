@@ -15,18 +15,20 @@ class CarthageArchive
     # - Carthage/Build/iOS/618BEB79-4C7F-3692-B140-131FB983AC5E.bcsymbolmap
     # into Alamofire-iOS.zip
     def create_archive(options)
-        platform_path = "Carthage/Build/#{@platform}"
-
-        puts '---' if options[:verbose]
         puts "Archiving #{@framework_name} in #{@platform}" if options[:verbose]
 
+        platform_path = "Carthage/Build/#{@platform}"
         framework_path = "#{platform_path}/#{@framework_name}.framework"
+
+        # Some platforms don't get built, we just skip these.
+        unless Dir.exist?(framework_path)
+            puts "Archive can't be created, no built framework at #{framework_path}" if options[:verbose]
+            return false
+        end
+
         dsym_path = "#{platform_path}/#{@framework_name}.framework.dSYM"
         binary_path = "#{framework_path}/#{@framework_name}"
         bcsymbolmap_paths = find_bcsymbolmap_paths(platform_path, binary_path)
-
-        # Some platforms don't get built, we just skip these.
-        return false unless Dir.exist?(framework_path)
 
         raise "Directory #{framework_path} is missing. If framework name doesn't match repository, please add mapping via Cartrcfile" unless Dir.exist?(framework_path)
         raise "File #{dsym_path} is missing" unless File.exist?(dsym_path)
