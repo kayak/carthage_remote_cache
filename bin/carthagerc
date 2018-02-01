@@ -8,6 +8,7 @@ require 'commands'
 
 ARGV << '-h' if ARGV.empty?
 options = {
+    :force => false,
     :server_port => 9292,
     :verbose => false,
 }
@@ -30,6 +31,10 @@ opt_parser = OptionParser.new do |opt|
     opt.separator "    upload"
     opt.separator "        archive frameworks in Carthage/Build and upload them to the server"
     opt.separator ""
+
+    opt.on("-f", "--force", "Forces upload if a framework artifact already exists on the server") do
+        options[:force] = true
+    end
 
     opt.on("-h", "--help", "Show help") do
         puts opt_parser

@@ -25,7 +25,7 @@ class UploadCommand
     def upload(carthage_dependency, framework_name, platform)
         puts '---' if @options[:verbose]
 
-        if @api.framework_exists(carthage_dependency, framework_name, platform)
+        if !@options[:force] && @api.framework_exists(carthage_dependency, framework_name, platform)
             @number_of_skipped_archives += 1
             return
         end
