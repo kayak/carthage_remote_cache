@@ -4,6 +4,7 @@ $LOAD_PATH.push File.expand_path("../../lib", __FILE__)
 
 require 'optparse'
 require 'carthage_remote_cache'
+require 'commands'
 
 ARGV << '-h' if ARGV.empty?
 options = {
@@ -70,6 +71,7 @@ when "download"
     for carthage_dependency in config.carthage_dependencies
         for framework_name in carthage_dependency.produced_framework_names(config)
             for platform in config.platforms
+                puts '---' if options[:verbose]
                 archive = api.download_framework(carthage_dependency, framework_name, platform)
                 begin
                     puts "Downloaded #{archive.archive_path}" if options[:verbose]
@@ -83,32 +85,7 @@ when "download"
     end
     puts "Downloaded and extracted #{number_of_downloaded_archives} archives."
 when "upload"
-    config = Configuration.new(options)
-    api = ServerAPI.new(config, options)
-
-    puts "All framework names: #{config.all_framework_names}" if options[:verbose]
-    number_of_uploaded_archives = 0
-    number_of_skipped_archives = 0
-    for carthage_dependency in config.carthage_dependencies
-        for framework_name in carthage_dependency.produced_framework_names(config)
-            for platform in config.platforms
-                if api.framework_exists(carthage_dependency, framework_name, platform)
-                    number_of_skipped_archives += 1
-                    next
-                end
-                archive = CarthageArchive.new(framework_name, platform)
-                archive_created = archive.create_archive(options)
-                next unless archive_created
-                begin
-                    api.upload_framework(archive.archive_path, carthage_dependency, framework_name, platform)
-                    number_of_uploaded_archives += 1
-                ensure
-                    archive.delete_archive
-                end
-            end
-        end
-    end
-    puts "Uploaded #{number_of_uploaded_archives} archives, skipped #{number_of_skipped_archives}."
+    UploadCommand.new(options).run
 else
     if command.nil?
         raise "Command is missing, run with --help  to show available commands"
