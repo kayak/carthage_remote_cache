@@ -21,7 +21,6 @@ Server is bound to port 9292 by default. If you need to use different port, spec
     $ carthage server -p9000
     $ carthage server --port=9000
 
-
 ### Carthage Preparation
 
 ### Artifact Upload
@@ -41,6 +40,29 @@ After checking out the repo, run `dev/setup` to install dependencies. You can al
 To start development server, run `dev/start_server`, which utilizes `rerun` for automatic reloading of source code and resources.Â
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `carthage_remote_cache.gemspec`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org/gems/carthage_remote_cache).
+
+### Example Folder
+
+Repository is bundled with an example Carthage setup – open the `example` folder, where  you should be able to see following files, which are preconfigured to bring in a couple of frameworks:
+- Cartfile
+- Cartfile.resolved
+- Cartrcfile
+
+#### Upload
+
+First of all, build Carthage dependencies:
+
+    $ carthage update --no-build && carthage bootstrap
+
+After the `Carthage/Build` folder gets populated, execute:
+
+    $ carthagerc upload
+
+You should be able to observe the `/tmp/carthage_remote_cache` folder filling.
+
+#### Download
+
+    $ carthagerc download
 
 ## License
 
