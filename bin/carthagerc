@@ -7,12 +7,16 @@ require 'carthage_remote_cache'
 
 ARGV << '-h' if ARGV.empty?
 options = {
+    :server_port => 9292,
     :verbose => false,
 }
 opt_parser = OptionParser.new do |opt|
     opt.banner = "carthagerc COMMAND [OPTIONS]"
     opt.separator ""
     opt.separator "Available commands:"
+    opt.separator "    server"
+    opt.separator "        starts cache server"
+    opt.separator ""
     opt.separator "    config"
     opt.separator "        prints environment and Cartrcfile configuration"
     opt.separator ""
@@ -31,6 +35,10 @@ opt_parser = OptionParser.new do |opt|
         exit
     end
 
+    opt.on("-pPORT", "--port=PORT", "Server application port used when starting server") do |port|
+        options[:server_port] = port
+    end
+
     opt.on("-v", "--verbose", "Show extra runtime information") do
         options[:verbose] = true
     end
@@ -38,18 +46,26 @@ end
 
 opt_parser.parse!
 
-config = Configuration.new(options)
-api = ServerAPI.new(config, options)
-
 command = ARGV[0]
 case command
+when "server"
+    require 'server/server_app'
+    Rack::Handler::WEBrick.run(
+        Sinatra::Application,
+        :Port => options[:server_port]
+    )
 when "config"
+    config = Configuration.new(options)
+    api = ServerAPI.new(config, options)
     puts config
 when "list-build-frameworks"
     frameworks = Dir.glob('Carthage/Build/**/*.framework').map { |path| File.basename(path) }
     puts "Found following frameworks:"
     puts frameworks.uniq.sort
 when "download"
+    config = Configuration.new(options)
+    api = ServerAPI.new(config, options)
+
     number_of_downloaded_archives = 0
     for carthage_dependency in config.carthage_dependencies
         for framework_name in carthage_dependency.produced_framework_names(config)
@@ -67,6 +83,9 @@ when "download"
     end
     puts "Downloaded and extracted #{number_of_downloaded_archives} archives."
 when "upload"
+    config = Configuration.new(options)
+    api = ServerAPI.new(config, options)
+
     puts "All framework names: #{config.all_framework_names}" if options[:verbose]
     number_of_uploaded_archives = 0
     number_of_skipped_archives = 0
