@@ -20,6 +20,9 @@ opt_parser = OptionParser.new do |opt|
     opt.separator "    list-built-frameworks"
     opt.separator "        find frameworks which are available for upload"
     opt.separator ""
+    opt.separator "    download"
+    opt.separator "        fetch all frameworks into Carthage/Build"
+    opt.separator ""
     opt.separator "    upload"
     opt.separator "        archive frameworks in Carthage/Build and upload them to the server"
     opt.separator ""
@@ -47,6 +50,20 @@ when "list-build-frameworks"
     frameworks = Dir.glob('Carthage/Build/**/*.framework').map { |path| File.basename(path) }
     puts "Found following frameworks:"
     puts frameworks.uniq.sort
+when "download"
+    for carthage_dependency in config.carthage_dependencies
+        for framework_name in carthage_dependency.produced_framework_names(config)
+            for platform in config.platforms
+                archive = api.download_framework(carthage_dependency, framework_name, platform)
+                begin
+                    puts archive.archive_path
+                    archive.unpack_archive(options)
+                ensure
+                    archive.delete_archive
+                end
+            end
+        end
+    end
 when "upload"
     puts "All framework names: #{config.all_framework_names}" if options[:verbose]
     for carthage_dependency in config.carthage_dependencies

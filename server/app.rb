@@ -13,9 +13,23 @@ head '/framework/:xcodebuild_version/:swift_version/:repository/:framework_name/
     filename = File.join(dirname, archive.archive_filename)
 
     if File.exists?(filename)
-        status 200
+        status(200)
     else
-        status 404
+        status(404)
+    end
+end
+
+# Retrieve .zip framework archive.
+get '/framework/:xcodebuild_version/:swift_version/:repository/:framework_name/:platform/:version' do
+    dirname = params_to_framework_dir(params)
+    archive = CarthageArchive.new(params[:framework_name], params[:platform])
+    filename = File.join(dirname, archive.archive_filename)
+
+    if File.exists?(filename)
+        status(200)
+        send_file(filename)
+    else
+        status(404)
     end
 end
 
@@ -35,7 +49,7 @@ post '/framework/:xcodebuild_version/:swift_version/:repository/:framework_name/
         target_file.write(source_file.read)
     end
 
-    status 200
+    status(200)
 end
 
 private

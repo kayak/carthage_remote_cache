@@ -8,7 +8,7 @@ class CarthageArchive
         @framework_name = framework_name
         @platform = platform
         @archive_filename = "#{framework_name}-#{platform}.zip"
-        @archive_path = @archive_filename # TODO /tmp/...?
+        @archive_path = @archive_filename
     end
 
     # Aggregate following files:
@@ -27,6 +27,7 @@ class CarthageArchive
         binary_path = "#{framework_path}/#{@framework_name}"
         bcsymbolmap_paths = find_bcsymbolmap_paths(platform_path, binary_path)
 
+        # Some platforms don't get built, we just skip these.
         return false unless Dir.exist?(framework_path)
 
         raise "Directory #{framework_path} is missing. If framework name doesn't match repository, please add mapping via Cartrcfile" unless Dir.exist?(framework_path)
@@ -41,6 +42,12 @@ class CarthageArchive
         sh("zip -r #{quote @archive_path} #{quote framework_path} #{quote dsym_path} #{quote bcsymbolmap_paths}")
         puts "#{@archive_path} #{File.size @archive_path}" if options[:verbose]
         true
+    end
+
+    def unpack_archive(options)
+        raise "Archive #{@archive_path} is missing" unless File.exists?(@archive_path)
+        puts "Unpacking #{@archive_path} #{File.size @archive_path}" if options[:verbose]
+        sh("unzip -o #{quote @archive_path}")
     end
 
     def delete_archive

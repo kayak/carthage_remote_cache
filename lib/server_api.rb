@@ -9,7 +9,7 @@ class ServerAPI
     end
 
     def framework_exists(carthage_dependency, framework_name, platform)
-        url = frameworkURL(carthage_dependency,framework_name, platform)
+        url = framework_url(carthage_dependency,framework_name, platform)
         puts "API: Checking if framework exists via #{url}" if @options[:verbose]
         response = RestClient.head(url) { |response, request, result| response }
         # TODO use response JSON instead of codes.
@@ -18,16 +18,27 @@ class ServerAPI
         exists
     end
 
+    def download_framework(carthage_dependency, framework_name, platform)
+        url = framework_url(carthage_dependency, framework_name, platform)
+        puts "API: Downloading framework from #{url}" if @options[:verbose]
+        archive = RestClient.get(url) do |response, request, result|
+            raise "Failed to download framework #{carthage_dependency} – #{framework_name} (#{platform}), status code #{response.code}. Please `upload` the framework first." unless response.code == 200
+            archive = CarthageArchive.new(framework_name, platform)
+            File.write(archive.archive_path, response.to_s)
+            archive
+        end
+        archive
+    end
+
     def upload_framework(zipfile_name, carthage_dependency, framework_name, platform)
-        url = frameworkURL(carthage_dependency,framework_name, platform)
+        url = framework_url(carthage_dependency, framework_name, platform)
         puts "API: Uploading framework to #{url}" if @options[:verbose]
         RestClient.post(url, :framework_file => File.new(zipfile_name))
     end
 
     private
 
-    # TODO replace framework_name with repository
-    def frameworkURL(carthage_dependency, framework_name, platform)
+    def framework_url(carthage_dependency, framework_name, platform)
         # TODO uri = URI::HTTP.build(:host => "www.google.com", :query => URI.encode_www_form({ :q => "test" }))
         File.join(
             @config.server,
