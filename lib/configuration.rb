@@ -18,14 +18,14 @@ class Configuration
         @swift_version = swift_raw_version[/Apple Swift version (.*) \(/, 1]
         raise "Could not parse swift version from '#{raw_swift_version}'" if @swift_version.nil?
 
-        raise "Misssing Cartfile.resolved" unless File.exists?('Cartfile.resolved')
+        raise "Misssing Cartfile.resolved" unless File.exist?('Cartfile.resolved')
         @carthage_dependencies = File.readlines("Cartfile.resolved")
             .map { |line| CarthageDependency.parse_cartfile_resolved_line(line) }
             .compact
     end
 
     def initialize_cartrcfile(options)
-        raise "Misssing Cartrcfile" unless File.exists?('Cartrcfile')
+        raise "Misssing Cartrcfile" unless File.exist?('Cartrcfile')
         cartrcfile = YAML.load_file('Cartrcfile')
         puts "Cartrcfile: #{cartrcfile.inspect}" if options[:verbose]
 

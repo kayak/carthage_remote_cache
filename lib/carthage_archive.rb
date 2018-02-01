@@ -45,13 +45,13 @@ class CarthageArchive
     end
 
     def unpack_archive(options)
-        raise "Archive #{@archive_path} is missing" unless File.exists?(@archive_path)
+        raise "Archive #{@archive_path} is missing" unless File.exist?(@archive_path)
         puts "Unpacking #{@archive_path} #{File.size @archive_path}" if options[:verbose]
         sh("unzip -o #{quote @archive_path}")
     end
 
     def delete_archive
-        File.delete(@archive_path) if File.exists?(@archive_path)
+        File.delete(@archive_path) if File.exist?(@archive_path)
     end
 
     private

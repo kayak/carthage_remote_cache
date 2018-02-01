@@ -14,7 +14,7 @@ head framework_path do
     archive = CarthageArchive.new(params[:framework_name], params[:platform])
     filename = File.join(dirname, archive.archive_filename)
 
-    if File.exists?(filename)
+    if File.exists(filename)
         status(200)
     else
         status(404)
@@ -27,7 +27,7 @@ get framework_path do
     archive = CarthageArchive.new(params[:framework_name], params[:platform])
     filename = File.join(dirname, archive.archive_filename)
 
-    if File.exists?(filename)
+    if File.exist?(filename)
         status(200)
         send_file(filename)
     else
@@ -44,7 +44,7 @@ post framework_path do
     target_filename = File.join(dirname, filename)
 
     FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
-    File.delete(target_filename) if File.exists?(target_filename)
+    File.delete(target_filename) if File.exist?(target_filename)
 
     puts "Writing: #{target_filename}"
     File.open(target_filename, 'wb') do |target_file|
