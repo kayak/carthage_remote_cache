@@ -1,0 +1,15 @@
+{
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
+
+  ],
+  "commitish" : "1.5.1",
+  "iOS" : [
+    {
+      "name" : "Lottie",
+      "hash" : "8c07fe26a5e8e1b64d58b39130aaea817af22ad8fb5febcca1725f8aec3cd218"
+    }
+  ]
+}

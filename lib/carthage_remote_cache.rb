@@ -6,3 +6,4 @@ require 'carthage_dependency'
 require 'configuration'
 require 'server_api'
 require 'utils'
+require "version_file"
