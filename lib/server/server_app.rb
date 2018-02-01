@@ -6,8 +6,10 @@ get '/' do
     "Welcome to carthage_remote_cache"
 end
 
+framework_path = '/framework/:xcodebuild_version/:swift_version/:repository/:framework_name/:version/:platform'
+
 # Check whether framework archive is already cached.
-head '/framework/:xcodebuild_version/:swift_version/:repository/:framework_name/:platform/:version' do
+head framework_path do
     dirname = params_to_framework_dir(params)
     archive = CarthageArchive.new(params[:framework_name], params[:platform])
     filename = File.join(dirname, archive.archive_filename)
@@ -20,7 +22,7 @@ head '/framework/:xcodebuild_version/:swift_version/:repository/:framework_name/
 end
 
 # Retrieve .zip framework archive.
-get '/framework/:xcodebuild_version/:swift_version/:repository/:framework_name/:platform/:version' do
+get framework_path do
     dirname = params_to_framework_dir(params)
     archive = CarthageArchive.new(params[:framework_name], params[:platform])
     filename = File.join(dirname, archive.archive_filename)
@@ -34,7 +36,7 @@ get '/framework/:xcodebuild_version/:swift_version/:repository/:framework_name/:
 end
 
 # Upload framework archive. Overwrites already cached archive if exists.
-post '/framework/:xcodebuild_version/:swift_version/:repository/:framework_name/:platform/:version' do
+post framework_path do
     filename = params[:framework_file][:filename]
     source_file = params[:framework_file][:tempfile]
 

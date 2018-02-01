@@ -46,8 +46,8 @@ class ServerAPI
             sanitized(@config.swift_version),
             sanitized(carthage_dependency.repository), # TODO doens't account for URL or file:// (git / binary)
             sanitized(framework_name),
-            sanitized(platform),
-            sanitized(carthage_dependency.version)
+            sanitized(carthage_dependency.version),
+            sanitized(platform)
         )
     end
 
