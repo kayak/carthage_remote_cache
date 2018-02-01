@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     carthage_remote_cache (0.0.1)
-      rerun
+      rack
       rest-client
       sinatra
 
@@ -54,6 +54,7 @@ DEPENDENCIES
   bundler (~> 1.16)
   carthage_remote_cache!
   rake (~> 10.0)
+  rerun
 
 BUNDLED WITH
    1.16.1

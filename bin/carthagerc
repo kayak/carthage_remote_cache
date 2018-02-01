@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH.push File.expand_path("../../lib", __FILE__)
+
 require 'optparse'
-require 'bundler/setup'
 require 'carthage_remote_cache'
 
 ARGV << '-h' if ARGV.empty?

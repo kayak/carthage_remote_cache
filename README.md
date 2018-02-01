@@ -22,9 +22,9 @@ Documentation is also available when running `carthagerc` or `carthagerc --help`
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `dev/setup` to install dependencies. You can also run `dev/console` for an interactive prompt that will allow you to experiment.
 
-To start development server, run `bin/dev_server`, which utilizes `rerun` for automatic reloading of source code and resources.Â
+To start development server, run `dev/start_server`, which utilizes `rerun` for automatic reloading of source code and resources.Â
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `carthage_remote_cache.gemspec`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org/gems/carthage_remote_cache).
 
