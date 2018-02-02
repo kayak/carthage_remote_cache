@@ -2,7 +2,7 @@ require 'yaml'
 
 class Configuration
 
-    attr_reader :xcodebuild_version, :swift_version, :carthage_dependencies, :server, :platforms
+    attr_reader :xcodebuild_version, :swift_version, :carthage_dependencies, :server
 
     def initialize(options)
         initialize_env
@@ -27,32 +27,13 @@ class Configuration
     def initialize_cartrcfile(options)
         raise "Misssing Cartrcfile" unless File.exist?('Cartrcfile')
         cartrcfile = YAML.load_file('Cartrcfile')
-        puts "Cartrcfile: #{cartrcfile.inspect}" if options[:verbose]
 
         @server = cartrcfile['server']
         raise "Missing 'server' configuration in Cartrcfile" if @server.nil?
-
-        # TODO how to find out which  platforms the framework is available in
-        @platforms = cartrcfile['platforms'] || ['iOS', 'macOS', 'tvOS', 'watchOS']
-
-        @repository_to_framework_names = {}
-        cartrcfile['dependencies'].each do |item|
-            type_and_repository = item['name']
-            @repository_to_framework_names[type_and_repository] = item['frameworks']
-        end
-        puts "Repository to framework names: #{@repository_to_framework_names.inspect}" if options[:verbose]
-    end
-
-    # A single cartfile dependency can produce several frameworks.
-    def produced_framework_names(dependency)
-        key = "#{dependency.type} \"#{dependency.repository}\""
-        @repository_to_framework_names[key]
     end
 
     def all_framework_names
-        @carthage_dependencies
-            .map { |d| d.produced_framework_names(self) }
-            .flatten
+        version_files.flat_map { |vf| vf.framework_names }.uniq.sort
     end
 
     def to_s
@@ -61,10 +42,28 @@ class Configuration
             ---
             Swift: #{@swift_version}
             ---
+            Server: #{@server}
+            ---
             Cartfile.resolved:
             #{@carthage_dependencies.join("\n")}
             ---
-            Platforms: #{@platforms}
+            Local Build Frameworks:
+            #{framework_names_with_platforms.join("\n")}
         EOS
     end
+
+    private
+
+    def framework_names_with_platforms
+        version_files.flat_map do |vf|
+            vf.platforms_by_framework.flat_map do |framework_name, platforms|
+                "#{framework_name} #{vf.version} #{platforms}"
+            end
+        end
+    end
+
+    def version_files
+        @carthage_dependencies.map { |d| VersionFile.new(d.version_filepath) }
+    end
+
 end

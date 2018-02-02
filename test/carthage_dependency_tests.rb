@@ -15,4 +15,9 @@ class CarthageDependencyTests < Test::Unit::TestCase
         assert_equal(nil, d)
     end
 
+    def test_version_filename
+        d = CarthageDependency.parse_cartfile_resolved_line('github "yada/lada" "1.2.3"')
+        assert_equal('.lada.version', d.version_filename)
+    end
+
 end

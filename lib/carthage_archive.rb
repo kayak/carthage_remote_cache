@@ -3,6 +3,8 @@ class CarthageArchive
     attr_reader :archive_filename, :archive_path
 
     def initialize(framework_name, platform)
+        raise "Platform #{platform.inspect} needs to be a symbol" unless platform.kind_of?(Symbol)
+
         @framework_name = framework_name
         @platform = platform
         @archive_filename = "#{framework_name}-#{platform}.zip"
@@ -17,17 +19,13 @@ class CarthageArchive
     def create_archive(options)
         puts "Archiving #{@framework_name} in #{@platform}" if options[:verbose]
 
-        platform_path = "Carthage/Build/#{@platform}"
-        framework_path = "#{platform_path}/#{@framework_name}.framework"
+        platform_path = File.join(CARTHAGE_BUILD_DIR, platform_to_carthage_dir_string(@platform))
+        framework_path = File.join(platform_path, "#{@framework_name}.framework")
 
-        # Some platforms don't get built, we just skip these.
-        unless Dir.exist?(framework_path)
-            puts "Archive can't be created, no built framework at #{framework_path}" if options[:verbose]
-            return false
-        end
+        raise "Archive can't be created, no built framework at #{framework_path}" unless Dir.exist?(framework_path)
 
-        dsym_path = "#{platform_path}/#{@framework_name}.framework.dSYM"
-        binary_path = "#{framework_path}/#{@framework_name}"
+        dsym_path = File.join(platform_path, "#{@framework_name}.framework.dSYM")
+        binary_path = File.join(framework_path, @framework_name)
         bcsymbolmap_paths = find_bcsymbolmap_paths(platform_path, binary_path)
 
         raise "Directory #{framework_path} is missing. If framework name doesn't match repository, please add mapping via Cartrcfile" unless Dir.exist?(framework_path)
@@ -41,7 +39,6 @@ class CarthageArchive
         delete_archive
         sh("zip -r #{quote @archive_path} #{quote framework_path} #{quote dsym_path} #{quote bcsymbolmap_paths}")
         puts "#{@archive_path} #{File.size @archive_path}" if options[:verbose]
-        true
     end
 
     def unpack_archive(options)
@@ -59,7 +56,7 @@ class CarthageArchive
     def find_bcsymbolmap_paths(platform_path, binary_path)
         raw_dwarfdump = dwarfdump(binary_path)
         uuids = parse_uuids(raw_dwarfdump)
-        bcsymbolmap_paths = uuids.map { |uuid| "#{platform_path}/#{uuid}.bcsymbolmap" }.select { |path| File.exist?(path) }
+        bcsymbolmap_paths = uuids.map { |uuid| File.join(platform_path, "#{uuid}.bcsymbolmap") }.select { |path| File.exist?(path) }
         bcsymbolmap_paths
     end
 

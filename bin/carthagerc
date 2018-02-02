@@ -32,7 +32,7 @@ opt_parser = OptionParser.new do |opt|
     opt.separator "        archive frameworks in Carthage/Build and upload them to the server"
     opt.separator ""
 
-    opt.on("-f", "--force", "Forces upload if a framework artifact already exists on the server") do
+    opt.on("-f", "--force", "Forces upload/download of framework archives even if local and server .version files match") do
         options[:force] = true
     end
 
@@ -57,9 +57,7 @@ case command
 when "server"
     ServerCommand.new(options).run
 when "config"
-    config = Configuration.new(options)
-    api = ServerAPI.new(config, options)
-    puts config
+    puts Configuration.new(options)
 when "list-build-frameworks"
     frameworks = Dir.glob('Carthage/Build/**/*.framework').map { |path| File.basename(path) }
     puts "Found following frameworks:"

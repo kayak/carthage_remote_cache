@@ -23,23 +23,25 @@ class CarthageDependency
         @version = args[:version]
     end
 
-    # TODO What is this?
-    def produced_framework_names(config)
-        names = config.produced_framework_names(self)
-        if names.nil?
-            case @type
-            when "github"
-                name = @repository.split("/").last
-                [name]
-            else
-                raise "Framework name resolution not supported, please provide mapping in Cartrcfile"
-            end
+    # Since one Cartfile.resolved entry may produce multiple differently named frameworks,
+    # this is an entry point to identifying a framework name.
+    def guessed_framework_basename
+        case @type
+        when "github"
+            repository.split("/").last
         else
-            names
+            raise "Determining version_filename from #{@type} dependency is not yet supported"
         end
     end
 
-    # TODO where is this used
+    def version_filename
+        ".#{guessed_framework_basename}.version"
+    end
+
+    def version_filepath
+        File.join(CARTHAGE_BUILD_DIR, version_filename)
+    end
+
     def to_s
         "#{@type} \"#{@repository}\" \"#{@version}\""
     end

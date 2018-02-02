@@ -1,7 +1,1 @@
 server: http://localhost:9292/
-
-platforms: [iOS, tvOS, watchOS]
-
-dependencies:
-    -   name: github "CocoaLumberjack/CocoaLumberjack"
-        frameworks: [CocoaLumberjack, CocoaLumberjackSwift]
