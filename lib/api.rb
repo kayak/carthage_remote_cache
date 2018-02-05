@@ -18,7 +18,7 @@ class API
 
     def create_and_upload_archive(carthage_dependency, framework_name, platform)
         archive = CarthageArchive.new(framework_name, platform)
-        archive.create_archive(@options)
+        archive.create_archive
         begin
             @networking.upload_framework_archive(archive.archive_path, carthage_dependency, framework_name, platform)
         ensure
@@ -30,8 +30,8 @@ class API
         archive = @networking.download_framework_archive(carthage_dependency, framework_name, platform)
         return nil if archive.nil?
         begin
-            puts "Downloaded #{archive.archive_path}" if @options[:verbose]
-            archive.unpack_archive(@options)
+            $LOG.debug("Downloaded #{archive.archive_path}")
+            archive.unpack_archive
         ensure
             archive.delete_archive
         end

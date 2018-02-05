@@ -2,16 +2,15 @@ require 'rest-client'
 
 class Networking
 
-    def initialize(config, options)
+    def initialize(config)
         @config = config
-        @options = options
     end
 
     # Version Files
 
     def download_version_file(carthage_dependency)
         url = version_file_url(carthage_dependency)
-        puts "Downloading version file from #{url}" if @options[:verbose]
+        $LOG.debug("Downloading version file from #{url}")
         version_file = RestClient.get(url) do |response, request, result|
             if response.code == 200
                 File.write(carthage_dependency.version_filename, response.to_s)
@@ -25,7 +24,7 @@ class Networking
 
     def upload_version_file(carthage_dependency)
         url = version_file_url(carthage_dependency)
-        puts "Uploading #{carthage_dependency.version_filename}" if @options[:verbose]
+        $LOG.debug("Uploading #{carthage_dependency.version_filename}")
         RestClient.post(url, :version_file => File.new(carthage_dependency.version_filepath))
     end
 
@@ -33,7 +32,7 @@ class Networking
 
     def download_framework_archive(carthage_dependency, framework_name, platform)
         url = framework_url(carthage_dependency, framework_name, platform)
-        puts "Downloading framework from #{url}" if @options[:verbose]
+        $LOG.debug("Downloading framework from #{url}")
         archive = RestClient.get(url) do |response, request, result|
             if response.code == 200
                 archive = CarthageArchive.new(framework_name, platform)
@@ -48,7 +47,7 @@ class Networking
 
     def upload_framework_archive(zipfile_name, carthage_dependency, framework_name, platform)
         url = framework_url(carthage_dependency, framework_name, platform)
-        puts "Uploading framework to #{url}" if @options[:verbose]
+        $LOG.debug("Uploading framework to #{url}")
         RestClient.post(url, :framework_file => File.new(zipfile_name))
     end
 

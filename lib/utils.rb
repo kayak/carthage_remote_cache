@@ -12,11 +12,20 @@ def bail(message, code = 1)
     Process.exit(code)
 end
 
+# Quote command line arguments with double quotes.
+# Useful for file paths with spaces.
 def quote(input)
     if input.is_a? String
-        '"' + input + '"'
+        if input.empty?
+            ''
+        else
+            '"' + input + '"'
+        end
     elsif input.is_a? Array
-        input.map { |i| quote i }.join(" ")
+        input
+            .map { |e| quote(e) }
+            .select { |e| !e.empty? }
+            .join(' ')
     else
         raise "Unsupported type #{input}"
     end

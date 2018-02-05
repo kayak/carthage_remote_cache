@@ -3,16 +3,15 @@ require 'concurrent'
 class UploadCommand
 
     def initialize(options)
-        @options = options
-        @config = Configuration.new(options)
-        @networking = Networking.new(@config, options)
+        @config = Configuration.new
+        @networking = Networking.new(@config)
         @api = API.new(@networking, options)
     end
 
     def run
         pool = Concurrent::FixedThreadPool.new(THREAD_POOL_SIZE)
 
-        puts "All framework names: #{@config.all_framework_names}" if @options[:verbose]
+        $LOG.debug("All framework names: #{@config.all_framework_names}")
 
         @number_of_uploaded_archives = 0
         @number_of_skipped_archives = 0
@@ -31,7 +30,6 @@ class UploadCommand
         pool.shutdown
         pool.wait_for_termination
 
-        puts '---' if @options[:verbose]
         puts "Uploaded #{@number_of_uploaded_archives} archives, skipped #{@number_of_skipped_archives}."
         bail(exceptions.map { |e| "#{e}" }.join("\n")) if exceptions.count > 0
     end
@@ -42,7 +40,7 @@ class UploadCommand
         version_file = VersionFile.new(carthage_dependency.version_filepath)
 
         if @api.version_file_matches_server?(carthage_dependency, version_file)
-            puts "Version file #{version_file.path} matches server version, skipping upload" if @options[:verbose]
+            $LOG.debug("Version file #{version_file.path} matches server version, skipping upload")
             @number_of_skipped_archives += version_file.number_of_frameworks
             return
         end

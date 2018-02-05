@@ -6,6 +6,7 @@ require 'carthage_archive'
 require 'carthage_dependency'
 require 'constants'
 require 'configuration'
+require 'log'
 require 'networking'
 require 'utils'
 require "version_file"

@@ -58,7 +58,7 @@ opt_parser = OptionParser.new do |opt|
     end
 
     opt.on("-v", "--verbose", "Show extra runtime information") do
-        options[:verbose] = true
+        $LOG.level = Logger::DEBUG
     end
 end
 
@@ -67,7 +67,7 @@ opt_parser.parse!
 command = ARGV[0]
 case command
 when "config"
-    puts Configuration.new(options)
+    puts Configuration.new
 when "download"
     DownloadCommand.new(options).run
 when "init"

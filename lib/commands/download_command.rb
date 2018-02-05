@@ -4,8 +4,8 @@ class DownloadCommand
 
     def initialize(options)
         @options = options
-        @config = Configuration.new(options)
-        @networking = Networking.new(@config, options)
+        @config = Configuration.new
+        @networking = Networking.new(@config)
         @api = API.new(@networking, options)
     end
 
@@ -29,7 +29,6 @@ class DownloadCommand
         pool.shutdown
         pool.wait_for_termination
 
-        puts '---' if @options[:verbose]
         puts "Downloaded and extracted #{@number_of_downloaded_archives} archives, skipped #{@number_of_skipped_archives} archives."
         bail(exceptions.map { |e| "#{e}" }.join("\n")) if exceptions.count > 0
     end
@@ -44,7 +43,7 @@ class DownloadCommand
         end
 
         if !local_version_file.nil? && @api.version_file_matches_server?(carthage_dependency, local_version_file)
-            puts "Version file #{local_version_file.path} matches server version, skipping download" if @options[:verbose]
+            $LOG.debug("Version file #{local_version_file.path} matches server version, skipping download")
             @number_of_skipped_archives += local_version_file.number_of_frameworks
             return
         end
