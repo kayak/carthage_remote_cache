@@ -15,22 +15,34 @@ options = {
 opt_parser = OptionParser.new do |opt|
     opt.banner = "carthagerc COMMAND [OPTIONS]"
     opt.separator ""
-    opt.separator "Available commands:"
-    opt.separator "    server"
-    opt.separator "        starts cache server"
+    opt.separator "DESCRIPTION"
+    opt.separator "    carthagerc is a centralized remote cache for Carthage framework artifacts. Check out project information at https://github.com/kayak/carthage_remote_cache"
     opt.separator ""
+    opt.separator "QUICKSTART"
+    opt.separator "    1. Run `carthagerc server` to start the cache on a remote server"
+    opt.separator "    2. `cd` to your project's root folder"
+    opt.separator "    3. Run `carthagerc init` to create #{CARTRCFILE} and point the server property to your running server URL"
+    opt.separator "    4. Assuming your #{CARTHAGE_DIR} directory is already built, run `carthagerc upload` to populate remote cache"
+    opt.separator "    5. Push your `CARTRCFILE` and from a different machine run `cartrcfile download` to fetch frameworks into #{CARTHAGE_BUILD_DIR} folder"
+    opt.separator "    6. Profit"
+    opt.separator ""
+    opt.separator "COMMANDS"
     opt.separator "    config"
-    opt.separator "        prints environment and Cartrcfile configuration"
-    opt.separator ""
-    opt.separator "    list-built-frameworks"
-    opt.separator "        find frameworks which are available for upload"
+    opt.separator "        prints environment information and #{CARTRCFILE} configuration"
     opt.separator ""
     opt.separator "    download"
-    opt.separator "        fetch all frameworks into Carthage/Build"
+    opt.separator "        fetch missing frameworks into Carthage/Build"
+    opt.separator ""
+    opt.separator "    init"
+    opt.separator "        create initial #{CARTRCFILE} in current directory"
     opt.separator ""
     opt.separator "    upload"
     opt.separator "        archive frameworks in Carthage/Build and upload them to the server"
     opt.separator ""
+    opt.separator "    server"
+    opt.separator "        start cache server"
+    opt.separator ""
+    opt.separator "OPTIONS"
 
     opt.on("-f", "--force", "Forces upload/download of framework archives even if local and server .version files match") do
         options[:force] = true
@@ -54,22 +66,16 @@ opt_parser.parse!
 
 command = ARGV[0]
 case command
-when "server"
-    ServerCommand.new(options).run
 when "config"
     puts Configuration.new(options)
-when "list-build-frameworks"
-    frameworks = Dir.glob('Carthage/Build/**/*.framework').map { |path| File.basename(path) }
-    puts "Found following frameworks:"
-    puts frameworks.uniq.sort
 when "download"
     DownloadCommand.new(options).run
+when "init"
+    InitCommand.new(options).run
 when "upload"
     UploadCommand.new(options).run
+when "server"
+    ServerCommand.new(options).run
 else
-    if command.nil?
-        raise "Command is missing, run with --help  to show available commands"
-    else
-        raise "Unsupported command #{command}, run with --help to show available commands"
-    end
+    raise "Unsupported command #{command}, run with --help to show available commands"
 end

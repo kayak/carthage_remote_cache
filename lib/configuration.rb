@@ -18,18 +18,18 @@ class Configuration
         @swift_version = swift_raw_version[/Apple Swift version (.*) \(/, 1]
         raise "Could not parse swift version from '#{raw_swift_version}'" if @swift_version.nil?
 
-        raise "Misssing Cartfile.resolved" unless File.exist?('Cartfile.resolved')
-        @carthage_dependencies = File.readlines("Cartfile.resolved")
+        raise "Misssing #{CARTFILE_RESOLVED}" unless File.exist?(CARTFILE_RESOLVED)
+        @carthage_dependencies = File.readlines(CARTFILE_RESOLVED)
             .map { |line| CarthageDependency.parse_cartfile_resolved_line(line) }
             .compact
     end
 
     def initialize_cartrcfile(options)
-        raise "Misssing Cartrcfile" unless File.exist?('Cartrcfile')
-        cartrcfile = YAML.load_file('Cartrcfile')
+        raise "Configuration file #{CARTRCFILE} was not found, consider creating one by running `carthagerc init`" unless File.exist?(CARTRCFILE)
+        cartrcfile = YAML.load_file(CARTRCFILE)
 
         @server = cartrcfile['server']
-        raise "Missing 'server' configuration in Cartrcfile" if @server.nil?
+        raise "Missing 'server' configuration in #{CARTRCFILE}" if @server.nil?
     end
 
     def all_framework_names
