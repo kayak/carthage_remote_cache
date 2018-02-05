@@ -11,18 +11,18 @@ class UploadCommand
     def run
         pool = Concurrent::FixedThreadPool.new(THREAD_POOL_SIZE)
 
-        $LOG.debug("All framework names: #{@config.all_framework_names}")
+        $LOG.debug("Will upload frameworks: #{@config.all_framework_names}")
 
         @number_of_uploaded_archives = 0
         @number_of_skipped_archives = 0
-        exceptions = []
+        errors = Concurrent::Array.new
 
         for carthage_dependency in @config.carthage_dependencies
             pool.post(carthage_dependency) do |carthage_dependency|
                 begin
                     upload(carthage_dependency)
                 rescue => e
-                    exceptions << e
+                    errors << e
                 end
             end
         end
@@ -30,8 +30,11 @@ class UploadCommand
         pool.shutdown
         pool.wait_for_termination
 
-        puts "Uploaded #{@number_of_uploaded_archives} archives, skipped #{@number_of_skipped_archives}."
-        bail(exceptions.map { |e| "#{e}" }.join("\n")) if exceptions.count > 0
+        if errors.count > 0
+            raise MultipleErrorsError.new(errors)
+        else
+            puts "Uploaded #{@number_of_uploaded_archives} archives, skipped #{@number_of_skipped_archives}."
+        end
     end
 
     private

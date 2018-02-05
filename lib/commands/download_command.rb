@@ -14,14 +14,14 @@ class DownloadCommand
 
         @number_of_downloaded_archives = 0
         @number_of_skipped_archives = 0
-        exceptions = []
+        errors = Concurrent::Array.new
 
         for carthage_dependency in @config.carthage_dependencies
             pool.post(carthage_dependency) do |carthage_dependency|
                 begin
                     download(carthage_dependency)
                 rescue => e
-                    exceptions << e
+                    errors << e
                 end
             end
         end
@@ -29,8 +29,11 @@ class DownloadCommand
         pool.shutdown
         pool.wait_for_termination
 
-        puts "Downloaded and extracted #{@number_of_downloaded_archives} archives, skipped #{@number_of_skipped_archives} archives."
-        bail(exceptions.map { |e| "#{e}" }.join("\n")) if exceptions.count > 0
+        if errors.count > 0
+            raise MultipleErrorsError.new(errors)
+        else
+            puts "Downloaded and extracted #{@number_of_downloaded_archives} archives, skipped #{@number_of_skipped_archives} archives."
+        end
     end
 
     private

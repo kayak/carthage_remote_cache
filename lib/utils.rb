@@ -6,7 +6,7 @@ end
 
 # Exits Ruby process, only to be called:
 # 1. If sh / system calls fail
-# 2. From top level layer - `carthagerc` script or `*Command` classes
+# 2. From top level `carthagerc` script
 def bail(message, code = 1)
     $stderr.puts(message.strip + "\n")
     Process.exit(code)

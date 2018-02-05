@@ -64,18 +64,22 @@ end
 
 opt_parser.parse!
 
-command = ARGV[0]
-case command
-when "config"
-    puts Configuration.new
-when "download"
-    DownloadCommand.new(options).run
-when "init"
-    InitCommand.new(options).run
-when "upload"
-    UploadCommand.new(options).run
-when "server"
-    ServerCommand.new(options).run
-else
-    bail("Unsupported command #{command}, run with --help to show available commands")
+begin
+    command = ARGV[0]
+    case command
+    when "config"
+        puts Configuration.new
+    when "download"
+        DownloadCommand.new(options).run
+    when "init"
+        InitCommand.new(options).run
+    when "upload"
+        UploadCommand.new(options).run
+    when "server"
+        ServerCommand.new(options).run
+    else
+        bail("Unsupported command #{command}, run with --help to show available commands")
+    end
+rescue => e
+    bail(e.message)
 end
