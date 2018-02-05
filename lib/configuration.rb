@@ -1,6 +1,14 @@
-require 'yaml'
-
 class Configuration
+
+    class UserConfig
+        attr_accessor :server
+    end
+
+    @@user_config = UserConfig.new
+
+    def self.setup
+        yield(@@user_config)
+    end
 
     attr_reader :xcodebuild_version, :swift_version, :carthage_dependencies, :server
 
@@ -48,10 +56,12 @@ class Configuration
 
     def initialize_cartrcfile
         raise "Configuration file #{CARTRCFILE} was not found, consider creating one by running `carthagerc init`" unless File.exist?(CARTRCFILE)
-        cartrcfile = YAML.load_file(CARTRCFILE)
 
-        @server = cartrcfile['server']
-        raise "Missing 'server' configuration in #{CARTRCFILE}" if @server.nil?
+        # Populate class variable @@user_config.
+        load File.join(Dir.pwd, CARTRCFILE)
+
+        @server = @@user_config.server
+        raise "Missing 'server' configuration in #{CARTRCFILE}" if @server.nil? || @server.empty?
     end
 
     def framework_names_with_platforms

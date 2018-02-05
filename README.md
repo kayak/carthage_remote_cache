@@ -8,20 +8,32 @@ The gem is published at [rubygems.org](https://rubygems.org/gems/carthage_remote
 
 ## Usage
 
-### Server
+### Cache Server
 
 Start the server with
 
     $ carthagerc server
 
-and browse to [localhost:9292](http://localhost:9292/) whereyou should be able to see the default _Welcome_ message.
+and browse to [localhost:9292](http://localhost:9292/) where you should be able to see the default _Welcome_ message.
 
 Server is bound to port 9292 by default. If you need to use different port, specify the port number via `-pPORT` or `--port=PORT` command line arguments, e.g.:
 
     $ carthage server -p9000
     $ carthage server --port=9000
 
+Don't forget to change port number in your version controlled `Cartrcfile`.
+
 ### Carthage Preparation
+
+### Init
+
+    $ carthagerc init
+
+Example `Cartrcfile`:
+
+    Configuration.setup do |c|
+        c.server = "http://localhost:9292/"
+    end
 
 ### Artifact Upload
     $ carthagerc upload

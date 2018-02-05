@@ -17,7 +17,9 @@ class InitCommand
 
     def file_contents
         <<~EOS
-            server: http://localhost:#{SERVER_DEFAULT_PORT}/
+            Configuration.setup do |c|
+                c.server = "http://localhost:#{SERVER_DEFAULT_PORT}/"
+            end
         EOS
     end
 
