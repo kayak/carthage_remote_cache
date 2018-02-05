@@ -15,7 +15,7 @@ class InitCommand
 
     def file_contents
         <<~EOS
-            server: http://localhost:9292/
+            server: http://localhost:#{SERVER_DEFAULT_PORT}/
         EOS
     end
 
