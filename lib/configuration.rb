@@ -1,3 +1,5 @@
+require 'uri'
+
 class Configuration
 
     class UserConfig
@@ -10,7 +12,7 @@ class Configuration
         yield(@@user_config)
     end
 
-    attr_reader :xcodebuild_version, :swift_version, :carthage_dependencies, :server
+    attr_reader :xcodebuild_version, :swift_version, :carthage_dependencies, :server_uri
 
     def initialize
         initialize_env
@@ -27,7 +29,7 @@ class Configuration
             ---
             Swift: #{@swift_version}
             ---
-            Server: #{@server}
+            Server: #{@server_uri.to_s}
             ---
             Cartfile.resolved:
             #{@carthage_dependencies.join("\n")}
@@ -60,8 +62,8 @@ class Configuration
         # Populate class variable @@user_config.
         load File.join(Dir.pwd, CARTRCFILE)
 
-        @server = @@user_config.server
-        raise "Missing 'server' configuration in #{CARTRCFILE}" if @server.nil? || @server.empty?
+        raise "Missing 'server' configuration in #{CARTRCFILE}" if @@user_config.server.nil? || @@user_config.server.empty?
+        @server_uri = URI.parse(@@user_config.server)
     end
 
     def framework_names_with_platforms
