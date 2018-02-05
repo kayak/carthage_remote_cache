@@ -60,7 +60,7 @@ After the `Carthage/Build` folder gets populated, execute:
 
     $ carthagerc upload
 
-You should be able to observe the `/tmp/carthage_remote_cache` folder filling.
+You should be able to observe the `~/.carthage_remote_cache` folder filling.
 
 #### Download
 
