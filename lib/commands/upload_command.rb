@@ -42,6 +42,8 @@ class UploadCommand
     def upload(carthage_dependency)
         version_file = VersionFile.new(carthage_dependency.version_filepath)
 
+        carthage_dependency.validate_version_file(version_file)
+
         if @api.version_file_matches_server?(carthage_dependency, version_file)
             $LOG.debug("Version file #{version_file.path} matches server version, skipping upload")
             @number_of_skipped_archives += version_file.number_of_frameworks

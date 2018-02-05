@@ -9,3 +9,5 @@ class MultipleErrorsError < StandardError
     end
 
 end
+
+class OutdatedFrameworkBuildError < StandardError; end

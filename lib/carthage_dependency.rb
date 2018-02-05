@@ -42,8 +42,24 @@ class CarthageDependency
         File.join(CARTHAGE_BUILD_DIR, version_filename)
     end
 
+    def validate_version_file(version_file)
+        raise OutdatedFrameworkBuildError.new, version_validation_message(version_file) if @version != version_file.version
+    end
+
     def to_s
         "#{@type} \"#{@repository}\" \"#{@version}\""
+    end
+
+    private
+
+    def version_validation_message(version_file)
+        <<~EOS
+            Outdated version of '#{guessed_framework_basename}' framework detected:
+                Expected version '#{@version}'
+                Found version '#{version_file.version}'
+
+            Please run `carthage bootstrap` to build frameworks.
+        EOS
     end
 
 end

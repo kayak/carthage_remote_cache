@@ -1,0 +1,43 @@
+{
+  "Mac" : [
+    {
+      "name" : "LumberjackSwift",
+      "hash" : "565ed7eed4cb72953e94a4b4462d996d6b4b239cd9a3b2d420e34b01ad95b9ee"
+    },
+    {
+      "name" : "Lumberjack",
+      "hash" : "8ffccb0b4e53139eda3374aabba50e4b88146e9b19c3b4230d7f1e4f51c643ee"
+    }
+  ],
+  "watchOS" : [
+    {
+      "name" : "LumberjackSwift",
+      "hash" : "0a100e1439fb42af3b05dc3b3be38890088f2c5daa3fdb2b2cbe69a44a6296fd"
+    },
+    {
+      "name" : "Lumberjack",
+      "hash" : "23adf0c8bf4e93004048121e25c4440fcf9b9db20d7c3d5eaf5265279a31651f"
+    }
+  ],
+  "tvOS" : [
+    {
+      "name" : "LumberjackSwift",
+      "hash" : "6f4bae3a332901f9be8a624cbbb73c0cbaaa875ffd518f61d04d3e5294cdda19"
+    },
+    {
+      "name" : "Lumberjack",
+      "hash" : "f9dacfdf1d8f6ab5dcb4296ffa0b95eabf2dc21ab065df22cca5a9f3b7b79c03"
+    }
+  ],
+  "commitish" : "3.2.1",
+  "iOS" : [
+    {
+      "name" : "LumberjackSwift",
+      "hash" : "118730e3ca22ba588e20002ccd83f7569e220155eeb18d9fa1d31bd69fa6ecf9"
+    },
+    {
+      "name" : "Lumberjack",
+      "hash" : "75d84a7fb5dc573381014838c2113c8230eb63a3f219b836c5ae523a9f497af9"
+    }
+  ]
+}
