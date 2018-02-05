@@ -6,9 +6,11 @@ class InitCommand
 
     def run
         path = File.join(Dir.pwd, CARTRCFILE)
-        raise "File #{path} already exists, stopping" if File.exist?(path)
-
-        File.write(path, file_contents)
+        if File.exist?(path)
+            bail("File #{path} already exists, stopping")
+        else
+            File.write(path, file_contents)
+        end
     end
 
     private

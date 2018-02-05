@@ -28,6 +28,7 @@ class API
 
     def download_and_unpack_archive(carthage_dependency, framework_name, platform)
         archive = @networking.download_framework_archive(carthage_dependency, framework_name, platform)
+        return nil if archive.nil?
         begin
             puts "Downloaded #{archive.archive_path}" if @options[:verbose]
             archive.unpack_archive(@options)

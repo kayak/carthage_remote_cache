@@ -35,10 +35,13 @@ class Networking
         url = framework_url(carthage_dependency, framework_name, platform)
         puts "Downloading framework from #{url}" if @options[:verbose]
         archive = RestClient.get(url) do |response, request, result|
-            raise "Failed to download framework #{carthage_dependency} – #{framework_name} (#{platform}), status code #{response.code}. Please `upload` the framework first." unless response.code == 200
-            archive = CarthageArchive.new(framework_name, platform)
-            File.write(archive.archive_path, response.to_s)
-            archive
+            if response.code == 200
+                archive = CarthageArchive.new(framework_name, platform)
+                File.write(archive.archive_path, response.to_s)
+                archive
+            else
+                nil
+            end
         end
         archive
     end

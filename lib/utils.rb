@@ -1,5 +1,15 @@
 def sh(cmd)
-    `#{cmd}`.strip
+    output = `#{cmd}`
+    bail("Command `#{cmd}` failed!") unless $?.success?
+    output.strip
+end
+
+# Exits Ruby process, only to be called:
+# 1. If sh / system calls fail
+# 2. From top level layer - `carthagerc` script or `*Command` classes
+def bail(message, code = 1)
+    $stderr.puts(message.strip + "\n")
+    Process.exit(code)
 end
 
 def quote(input)

@@ -2,13 +2,15 @@ PATH
   remote: .
   specs:
     carthage_remote_cache (0.0.1)
-      rack
-      rest-client
-      sinatra
+      concurrent-ruby (~> 1.0.5)
+      rack (~> 2.0.4)
+      rest-client (~> 2.0.2)
+      sinatra (~> 2.0.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    concurrent-ruby (1.0.5)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     ffi (1.9.18)
