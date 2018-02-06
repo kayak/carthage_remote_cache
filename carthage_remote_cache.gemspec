@@ -1,8 +1,8 @@
 Gem::Specification.new do |spec|
   spec.name          = "carthage_remote_cache"
-  spec.version       = "0.0.1"
+  spec.version       = "0.0.2"
 
-  spec.summary       = %q{Centralized cache to serve carthage frameworks. Useful for distributed CI setup, e.g. Bamboo with several build machines.}
+  spec.summary       = %q{Centralized cache to serve carthage frameworks. Useful for distributed CI setup with several build machines.}
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/kayak/carthage_remote_cache"
   spec.license       = "Apache-2.0"
