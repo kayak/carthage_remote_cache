@@ -28,7 +28,7 @@ opt_parser = OptionParser.new do |opt|
     opt.separator ""
     opt.separator "COMMANDS"
     opt.separator "    config"
-    opt.separator "        prints environment information and #{CARTRCFILE} configuration"
+    opt.separator "        print environment information and #{CARTRCFILE} configuration"
     opt.separator ""
     opt.separator "    download [-f|--force] [-v|--verbose]"
     opt.separator "        fetch missing frameworks into Carthage/Build"
@@ -41,6 +41,9 @@ opt_parser = OptionParser.new do |opt|
     opt.separator ""
     opt.separator "    server [-pPORT|--port=PORT]"
     opt.separator "        start cache server"
+    opt.separator ""
+    opt.separator "    version"
+    opt.separator "        print current version number"
     opt.separator ""
     opt.separator "OPTIONS"
 
@@ -77,6 +80,8 @@ begin
         UploadCommand.new(options).run
     when "server"
         ServerCommand.new(options).run
+    when "version"
+        puts VERSION
     else
         bail("Unsupported command #{command}, run with --help to show available commands")
     end

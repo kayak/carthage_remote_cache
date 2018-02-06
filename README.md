@@ -132,6 +132,10 @@ If you want to stop the agent, run:
 
 Check out official documentation on [Launch Agents](https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html) for more info.
 
+### Version
+
+    $ carthagerc version
+
 ### Help
 
 Documentation is also available when running `carthagerc` or `carthagerc --help`. Both commands print list of available commands with brief description.
@@ -142,7 +146,7 @@ Documentation is also available when running `carthagerc` or `carthagerc --help`
 
     COMMANDS
         config
-            prints environment information and Cartrcfile configuration
+            print environment information and Cartrcfile configuration
 
         download [-f|--force] [-v|--verbose]
             fetch missing frameworks into Carthage/Build
@@ -155,6 +159,9 @@ Documentation is also available when running `carthagerc` or `carthagerc --help`
 
         server [-pPORT|--port=PORT]
             start cache server
+
+        version
+            print current version number
 
     OPTIONS
         -f, --force                      Force upload/download of framework archives even if local and server .version files match
@@ -170,7 +177,7 @@ To start development server, run `dev/start_server`, which utilizes `rerun` for 
 
 Execute unit tests with `rake test`.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `carthage_remote_cache.gemspec`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org/gems/carthage_remote_cache).
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org/gems/carthage_remote_cache).
 
 ### Example Folder
 

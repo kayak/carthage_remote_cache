@@ -1,6 +1,10 @@
+lib = File.expand_path("../lib", __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require "version"
+
 Gem::Specification.new do |spec|
   spec.name          = "carthage_remote_cache"
-  spec.version       = "0.0.3"
+  spec.version       = VERSION
 
   spec.summary       = %q{Centralized cache to serve carthage frameworks. Useful for distributed CI setup with several build machines.}
   spec.description   = spec.summary
