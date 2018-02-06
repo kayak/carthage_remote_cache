@@ -23,7 +23,7 @@ class UtilsTests < Test::Unit::TestCase
     end
 
     def test_quote_unsupported
-        assert_raises RuntimeError do
+        assert_raises AppError do
             quote(1)
         end
     end

@@ -80,6 +80,6 @@ begin
     else
         bail("Unsupported command #{command}, run with --help to show available commands")
     end
-rescue => e
+rescue AppError => e
     bail(e.message)
 end

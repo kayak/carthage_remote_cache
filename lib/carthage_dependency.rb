@@ -30,7 +30,7 @@ class CarthageDependency
         when "github"
             repository.split("/").last
         else
-            raise "Determining version_filename from #{@type} dependency is not yet supported"
+            raise AppError.new, "Determining version_filename from #{@type} dependency is not yet supported"
         end
     end
 

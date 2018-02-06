@@ -1,4 +1,7 @@
-class MultipleErrorsError < StandardError
+# Common type for all carthage_remote_cache Errors.
+class AppError < StandardError; end
+
+class MultipleErrorsError < AppError
 
     def initialize(errors)
         @errors = errors
@@ -10,4 +13,4 @@ class MultipleErrorsError < StandardError
 
 end
 
-class OutdatedFrameworkBuildError < StandardError; end
+class OutdatedFrameworkBuildError < AppError; end

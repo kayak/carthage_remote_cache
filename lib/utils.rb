@@ -27,7 +27,7 @@ def quote(input)
             .select { |e| !e.empty? }
             .join(' ')
     else
-        raise "Unsupported type #{input}"
+        raise AppError.new, "Unsupported type #{input}"
     end
 end
 
@@ -42,7 +42,7 @@ def platform_to_api_string(platform)
     when :watchOS
         'watchOS'
     else
-        raise "Unrecognized platform #{platform.inspect}"
+        raise AppError.new, "Unrecognized platform #{platform.inspect}"
     end
 end
 
@@ -57,6 +57,6 @@ def platform_to_carthage_dir_string(platform)
     when :watchOS
         'watchOS'
     else
-        raise "Unrecognized platform #{platform.inspect}"
+        raise AppError.new, "Unrecognized platform #{platform.inspect}"
     end
 end

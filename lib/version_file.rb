@@ -63,13 +63,13 @@ class VersionFile
     private
 
     def parse
-        raise "File #{path} doesn't exist, has carthage been bootstrapped?" unless File.exist?(@path)
+        raise AppError.new, "File #{path} doesn't exist, has carthage been bootstrapped?" unless File.exist?(@path)
 
         file = File.read(@path)
         json = JSON.parse(file)
 
         @version = json['commitish']
-        raise "Version is missing in #{@path}" if @version.nil? || @version.empty?
+        raise AppError.new, "Version is missing in #{@path}" if @version.nil? || @version.empty?
 
         @frameworks_by_platform = {
             :iOS => parse_platform_array(json['iOS']),

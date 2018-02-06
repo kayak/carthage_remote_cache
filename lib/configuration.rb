@@ -44,25 +44,25 @@ class Configuration
     def initialize_env
         xcodebuild_raw_version = sh("xcodebuild -version")
         @xcodebuild_version = xcodebuild_raw_version[/Build version (.*)$/, 1]
-        raise "Could not parse build version from '#{xcodebuild_raw_version}'" if @xcodebuild_version.nil?
+        raise AppError.new, "Could not parse build version from '#{xcodebuild_raw_version}'" if @xcodebuild_version.nil?
 
         swift_raw_version = sh("swift -version")
         @swift_version = swift_raw_version[/Apple Swift version (.*) \(/, 1]
-        raise "Could not parse swift version from '#{raw_swift_version}'" if @swift_version.nil?
+        raise AppError.new, "Could not parse swift version from '#{raw_swift_version}'" if @swift_version.nil?
 
-        raise "Misssing #{CARTFILE_RESOLVED}" unless File.exist?(CARTFILE_RESOLVED)
+        raise AppError.new, "Misssing #{CARTFILE_RESOLVED}" unless File.exist?(CARTFILE_RESOLVED)
         @carthage_dependencies = File.readlines(CARTFILE_RESOLVED)
             .map { |line| CarthageDependency.parse_cartfile_resolved_line(line) }
             .compact
     end
 
     def initialize_cartrcfile
-        raise "Configuration file #{CARTRCFILE} was not found, consider creating one by running `carthagerc init`" unless File.exist?(CARTRCFILE)
+        raise AppError.new, "Configuration file #{CARTRCFILE} was not found, consider creating one by running `carthagerc init`" unless File.exist?(CARTRCFILE)
 
         # Populate class variable @@user_config.
         load File.join(Dir.pwd, CARTRCFILE)
 
-        raise "Missing 'server' configuration in #{CARTRCFILE}" if @@user_config.server.nil? || @@user_config.server.empty?
+        raise AppError.new, "Missing 'server' configuration in #{CARTRCFILE}" if @@user_config.server.nil? || @@user_config.server.empty?
         @server_uri = URI.parse(@@user_config.server)
     end
 

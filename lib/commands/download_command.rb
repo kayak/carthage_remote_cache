@@ -52,12 +52,12 @@ class DownloadCommand
         end
 
         version_file = @networking.download_version_file(carthage_dependency)
-        raise "Version file #{carthage_dependency.version_filename} is not present on the server, please run `carthagerc upload` first" if version_file.nil?
+        raise AppError.new, "Version file #{carthage_dependency.version_filename} is not present on the server, please run `carthagerc upload` first" if version_file.nil?
 
         version_file.frameworks_by_platform.each do |platform, framework_names|
             for framework_name in framework_names do
                 archive = @api.download_and_unpack_archive(carthage_dependency, framework_name, platform)
-                raise "Failed to download framework #{carthage_dependency} – #{framework_name} (#{platform}). Please `upload` the framework first." if archive.nil?
+                raise AppError.new, "Failed to download framework #{carthage_dependency} – #{framework_name} (#{platform}). Please `upload` the framework first." if archive.nil?
                 @number_of_downloaded_archives += 1
             end
         end
