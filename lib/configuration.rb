@@ -67,11 +67,12 @@ class Configuration
     end
 
     def framework_names_with_platforms
-        version_files.flat_map do |vf|
+        lines = version_files.flat_map do |vf|
             vf.platforms_by_framework.flat_map do |framework_name, platforms|
                 "#{framework_name} #{vf.version} #{platforms}"
             end
         end
+        lines.sort
     end
 
     def version_files

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Label</key>
+        <string>com.kayak.carthagerc.server</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/usr/local/bin/carthagerc</string>
+            <string>server</string>
+            <string>--port=9292</string>
+        </array>
+        <key>KeepAlive</key>
+        <true/>
+        <key>StandardOutPath</key>
+        <string>/Users/MY_USER/Library/Logs/carthagerc.server.stdout.log</string>
+        <key>StandardErrorPath</key>
+        <string>/Users/MY_USER/Library/Logs/carthagerc.server.stderr.log</string>
+    </dict>
+</plist>
