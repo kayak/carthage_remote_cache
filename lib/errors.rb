@@ -2,15 +2,13 @@
 class AppError < StandardError; end
 
 class MultipleErrorsError < AppError
+  def initialize(errors)
+    @errors = errors
+  end
 
-    def initialize(errors)
-        @errors = errors
-    end
-
-    def message
-        @errors.map { |e| e.message }.join("\n")
-    end
-
+  def message
+    @errors.map { |e| e.message }.join("\n")
+  end
 end
 
 class OutdatedFrameworkBuildError < AppError; end

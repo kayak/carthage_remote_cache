@@ -1,26 +1,24 @@
 class InitCommand
+  def initialize(options)
+    @options = options
+  end
 
-    def initialize(options)
-        @options = options
+  def run
+    path = File.join(Dir.pwd, CARTRCFILE)
+    if File.exist?(path)
+      raise AppError.new, "File #{path} already exists"
+    else
+      File.write(path, file_contents)
     end
+  end
 
-    def run
-        path = File.join(Dir.pwd, CARTRCFILE)
-        if File.exist?(path)
-            raise AppError.new, "File #{path} already exists"
-        else
-            File.write(path, file_contents)
-        end
-    end
+  private
 
-    private
-
-    def file_contents
-        <<~EOS
-            Configuration.setup do |c|
-                c.server = "http://localhost:#{SERVER_DEFAULT_PORT}/"
-            end
-        EOS
-    end
-
+  def file_contents
+    <<~EOS
+      Configuration.setup do |c|
+        c.server = "http://localhost:#{SERVER_DEFAULT_PORT}/"
+      end
+    EOS
+  end
 end
