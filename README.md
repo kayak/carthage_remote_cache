@@ -8,6 +8,8 @@ The gem is published at [rubygems.org](https://rubygems.org/gems/carthage_remote
 
     $ gem install carthage_remote_cache
 
+_Note: Installing ri documentation for sinatra can be quiet slow. Install with_ `--no-rdoc --no-ri` _if you don't want to wait._
+
 ## Quickstart
 
 1. Run `carthagerc server` to start the cache on a remote server
@@ -128,7 +130,7 @@ If you want to stop the agent, run:
 
     $ launchctl unload ~/Library/LaunchAgents/com.kayak.carthagerc.server.plist
 
-Check out official documentation on [Launch Agents](https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html) for more info. 
+Check out official documentation on [Launch Agents](https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html) for more info.
 
 ### Help
 

@@ -32,7 +32,7 @@ post versions_path do
     FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
     File.delete(target_filename) if File.exist?(target_filename)
 
-    $LOG.info("Writing #{target_filename}")
+    $LOG.info("Writing: #{target_filename}")
     File.open(target_filename, 'wb') do |target_file|
         target_file.write(source_file.read)
     end
