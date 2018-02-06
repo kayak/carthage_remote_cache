@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "carthage_remote_cache"
-  spec.version       = "0.0.2"
+  spec.version       = "0.0.3"
 
   spec.summary       = %q{Centralized cache to serve carthage frameworks. Useful for distributed CI setup with several build machines.}
   spec.description   = spec.summary
