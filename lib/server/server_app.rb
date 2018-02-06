@@ -40,19 +40,6 @@ post versions_path do
     status(200)
 end
 
-# Check whether framework archive is already cached.
-head frameworks_path do
-    dirname = params_to_framework_dir(params)
-    archive = CarthageArchive.new(params[:framework_name], params[:platform].to_sym)
-    filename = File.join(dirname, archive.archive_filename)
-
-    if File.exist?(filename)
-        status(200)
-    else
-        status(404)
-    end
-end
-
 # Retrieve .zip framework archive.
 get frameworks_path do
     dirname = params_to_framework_dir(params)
