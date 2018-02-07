@@ -15,24 +15,30 @@ class API
     end
   end
 
+  # @return zip archive size in Bytes
   def create_and_upload_archive(carthage_dependency, framework_name, platform)
     archive = CarthageArchive.new(framework_name, platform)
     archive.create_archive
+    archive_size = archive.archive_size
     begin
       @networking.upload_framework_archive(archive.archive_path, carthage_dependency, framework_name, platform)
     ensure
       archive.delete_archive
     end
+    archive_size
   end
 
+  # @return zip archive size in Bytes or nil if archive download failed
   def download_and_unpack_archive(carthage_dependency, framework_name, platform)
     archive = @networking.download_framework_archive(carthage_dependency, framework_name, platform)
     return nil if archive.nil?
+    archive_size = archive.archive_size
     begin
       $LOG.debug("Downloaded #{archive.archive_path}")
       archive.unpack_archive
     ensure
       archive.delete_archive
     end
+    archive_size
   end
 end

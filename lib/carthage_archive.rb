@@ -49,6 +49,11 @@ class CarthageArchive
     File.delete(@archive_path) if File.exist?(@archive_path)
   end
 
+  def archive_size
+    raise AppError.new, "Archive #{@archive_path} is missing" unless File.exist?(@archive_path)
+    File.size(@archive_path)
+  end
+
   private
 
   def find_bcsymbolmap_paths(platform_path, binary_path)
@@ -70,10 +75,7 @@ class CarthageArchive
     uuids.compact
   end
 
-  # E.g. "1.4MB"
   def formatted_archive_size
-    size = File.size(@archive_path)
-    megabytes = size / 1024.0 / 1024.0
-    "#{megabytes.round(1)}MB"
+    format_file_size(archive_size)
   end
 end

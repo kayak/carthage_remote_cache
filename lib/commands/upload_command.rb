@@ -14,6 +14,7 @@ class UploadCommand
 
     @number_of_uploaded_archives = 0
     @number_of_skipped_archives = 0
+    @total_archive_size = 0
     errors = Concurrent::Array.new
 
     for carthage_dependency in @config.carthage_dependencies
@@ -32,7 +33,9 @@ class UploadCommand
     if errors.count > 0
       raise MultipleErrorsError.new(errors)
     else
-      puts "Uploaded #{@number_of_uploaded_archives} archives, skipped #{@number_of_skipped_archives}."
+      puts "Uploaded #{@number_of_uploaded_archives} archives " +
+             "(#{format_file_size(@total_archive_size)}), " +
+             "skipped #{@number_of_skipped_archives}."
     end
   end
 
@@ -53,8 +56,9 @@ class UploadCommand
 
     version_file.frameworks_by_platform.each do |platform, framework_names|
       for framework_name in framework_names
-        @api.create_and_upload_archive(carthage_dependency, framework_name, platform)
+        archive_size = @api.create_and_upload_archive(carthage_dependency, framework_name, platform)
         @number_of_uploaded_archives += 1
+        @total_archive_size += archive_size
       end
     end
   end

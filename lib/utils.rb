@@ -60,3 +60,9 @@ def platform_to_carthage_dir_string(platform)
     raise AppError.new, "Unrecognized platform #{platform.inspect}"
   end
 end
+
+# @return string in "x.y MB" format
+def format_file_size(bytes)
+  megabytes = bytes / 1000.0 / 1000.0
+  "#{megabytes.round(1)} MB"
+end

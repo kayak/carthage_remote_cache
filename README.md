@@ -50,13 +50,13 @@ Start the upload with:
 
 After couple of seconds you should be able to see confirmation in terminal:
 
-    Uploaded 53 archives, skipped 0.
+    Uploaded 53 archives (97.2 MB), skipped 0.
 
 #### Overwriting Existing Cache
 
 Attempting to run `carthagerc upload` again will not upload any framework binaries, since all of them are already present on the cache server:
 
-    Uploaded 53 archives, skipped 53.
+    Uploaded 0 archives (0.0 MB), skipped 53.
 
 If your cache happens to be tainted by invalid framework binaries, you can overwrite existing cache with
 
@@ -74,7 +74,7 @@ Once cache server has been populated with framework binaries, it's time to fetch
 
 You should expect to see following output on a machine with empty `Carthage` folder:
 
-    Downloaded and extracted 53 archives, skipped 0 archives.
+    Downloaded and extracted 53 archives (97.2 MB), skipped 0 archives.
 
 Your project should be ready for building.
 

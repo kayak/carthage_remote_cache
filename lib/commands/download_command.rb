@@ -13,6 +13,7 @@ class DownloadCommand
 
     @number_of_downloaded_archives = 0
     @number_of_skipped_archives = 0
+    @total_archive_size = 0
     errors = Concurrent::Array.new
 
     for carthage_dependency in @config.carthage_dependencies
@@ -31,7 +32,9 @@ class DownloadCommand
     if errors.count > 0
       raise MultipleErrorsError.new(errors)
     else
-      puts "Downloaded and extracted #{@number_of_downloaded_archives} archives, skipped #{@number_of_skipped_archives} archives."
+      puts "Downloaded and extracted #{@number_of_downloaded_archives} archives " +
+             "(#{format_file_size(@total_archive_size)}), " +
+             "skipped #{@number_of_skipped_archives} archives."
     end
   end
 
@@ -56,9 +59,13 @@ class DownloadCommand
 
     version_file.frameworks_by_platform.each do |platform, framework_names|
       for framework_name in framework_names
-        archive = @api.download_and_unpack_archive(carthage_dependency, framework_name, platform)
-        raise AppError.new, "Failed to download framework #{carthage_dependency} – #{framework_name} (#{platform}). Please `upload` the framework first." if archive.nil?
-        @number_of_downloaded_archives += 1
+        archive_size = @api.download_and_unpack_archive(carthage_dependency, framework_name, platform)
+        if archive_size.nil?
+          raise AppError.new, "Failed to download framework #{carthage_dependency} – #{framework_name} (#{platform}). Please `upload` the framework first."
+        else
+          @number_of_downloaded_archives += 1
+          @total_archive_size += archive_size
+        end
       end
     end
     version_file.move_to_build_dir
