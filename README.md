@@ -10,7 +10,7 @@ The gem is published at [rubygems.org](https://rubygems.org/gems/carthage_remote
 
     $ gem install carthage_remote_cache
 
-_Note: Installing ri documentation for sinatra can be quiet slow. Install with_ `--no-rdoc --no-ri` _if you don't want to wait._
+_Note: Installing ri documentation for sinatra can be quite slow. Install with_ `--no-rdoc --no-ri` _if you don't want to wait._
 
 ## Quickstart
 
@@ -32,7 +32,7 @@ Before running any other commands, it's required to initialize `carthagerc` in y
 Which produces a `Cartrcfile`. Configuration is done via plain `ruby` code, so it is as simple as:
 
     Configuration.setup do |c|
-        c.server = "http://localhost:9292/"
+      c.server = "http://localhost:9292/"
     end
 
 `Cartrcfile` is supposed to be version controlled (e.g. included in git repository), so that it lives along your code and all consumers of the repository have access to same configuration.
@@ -57,7 +57,7 @@ Attempting to run `carthagerc upload` again will not upload any framework binari
 
     Uploaded 53 archives, skipped 53.
 
-If your cache happen to be tainted by invalid framework binaries, you can overwrite existing cache with
+If your cache happens to be tainted by invalid framework binaries, you can overwrite existing cache with
 
     $ carthagerc upload --force
 
