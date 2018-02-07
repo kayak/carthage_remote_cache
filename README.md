@@ -1,5 +1,7 @@
 # CarthageRemoteCache
 
+[![Gem Version](https://badge.fury.io/rb/carthage_remote_cache.svg)](https://badge.fury.io/rb/carthage_remote_cache)
+
 Centralized cache to serve Carthage frameworks. Useful for distributed CI setup with several build machines. It's aware of your `xcodebuild` and `swift` versions and builds on top of Carthage's `.xyz.version` file mechanism.
 
 ## Installation
