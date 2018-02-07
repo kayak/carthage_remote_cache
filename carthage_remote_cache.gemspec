@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rufo"
 
   spec.add_runtime_dependency "concurrent-ruby", "~> 1.0.5"
+  spec.add_runtime_dependency "test-unit", "~> 3.2.7"
   spec.add_runtime_dependency "rack", "~> 2.0.4"
   spec.add_runtime_dependency "rest-client", "~> 2.0.2"
   spec.add_runtime_dependency "sinatra", "~> 2.0.0"
