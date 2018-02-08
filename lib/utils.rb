@@ -2,7 +2,7 @@
 # @return command output, bails on failure
 def sh(cmd)
   output = `#{cmd}`
-  bail("Command `#{cmd}` failed!") unless $?.success?
+  bail("Command '#{cmd}' failed!") unless $?.success?
   output.strip
 end
 
