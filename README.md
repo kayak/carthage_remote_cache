@@ -122,6 +122,30 @@ Server is bound to port 9292 by default. If you need to use different port, spec
 
 Don't forget to change port number in your version controlled `Cartrcfile`.
 
+#### Directory Structure
+
+Cache server stores version files and framework archives in following directory structure:
+
+    .carthagerc_server/
+      9C40b/                            # Xcode version
+        4.0.3/                          # Swift version
+          Framework1/
+            1.0.0/                      # Framework1 version
+              .Framework1.version       # Carthage .version file
+              Framework1-iOS.zip        # Framework binary, dSYM and bcsymbolmap files
+              Framework1-macOS.zip
+              Framework1-tvOS.zip
+              Framework1-watchOS.zip
+            2.0.3/                      # Framework1 version
+              .Framework1.version
+              Framework1-iOS.zip
+          Framework2/
+            v3.2/                       # Framework2 version
+              .Framework2.version
+              Framework2-iOS.zip
+
+It's safe to delete whole directories since no other metadata is stored.
+
 #### Launch Agent
 
 You can also run the cache server as a launch agent. Copy the template [com.kayak.carthagerc.server.plist](https://github.com/kayak/carthage_remote_cache/blob/master/com.kayak.carthagerc.server.plist) file to `~/Library/LaunchAgents`, change log
