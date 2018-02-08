@@ -1,22 +1,58 @@
 FIXTURES_DIR = File.expand_path("../fixtures", __FILE__)
 FIXTURES_BUILD_DIR = File.join(FIXTURES_DIR, 'Build')
+FIXTURES_BUILD_IOS_DIR = File.join(FIXTURES_BUILD_DIR, 'iOS')
 
 class Fixtures
   class << self
+
+    # @!group lumberjack
+
     def lumberjack_version_file
-      VersionFile.new(lumberjack_path)
+      VersionFile.new(lumberjack_version_path)
     end
 
-    def lumberjack_path
+    def lumberjack_version_path
       File.join(FIXTURES_BUILD_DIR, '.lumberjack.version')
     end
 
+    # @!group baddie
+
     def baddie_version_file
-      VersionFile.new(baddie_path)
+      VersionFile.new(baddie_version_path)
     end
 
-    def baddie_path
+    def baddie_version_path
       File.join(FIXTURES_BUILD_DIR, '.baddie.version')
+    end
+
+    # @!group Framework1
+
+    def framework1_dir_path
+      File.join(FIXTURES_BUILD_IOS_DIR, 'Framework1.framework')
+    end
+
+    def framework1_dsym_path
+      File.join(FIXTURES_BUILD_IOS_DIR, 'Framework1.framework.dSYM')
+    end
+
+    def bcsymbolmap_A0F_path
+      File.join(FIXTURES_BUILD_IOS_DIR, bcsymbolmap_A0F_uuid + '.bcsymbolmap')
+    end
+
+    def bcsymbolmap_A66_path
+      File.join(FIXTURES_BUILD_IOS_DIR, bcsymbolmap_A66_uuid + '.bcsymbolmap')
+    end
+
+    def bcsymbolmap_A0F_uuid
+      'A0F30CB0-3A0D-33A7-B149-020251A1E1A4'
+    end
+
+    def bcsymbolmap_A66_uuid
+      'A663617F-D848-37DF-AB4B-6A35F51E005A'
+    end
+
+    def bcsymbolmap_invalid_uuid
+      'XXXXXXXX-D848-37DF-AB4B-6A35F51E005A'
     end
   end
 end

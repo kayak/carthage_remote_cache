@@ -1,0 +1,15 @@
+{
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
+
+  ],
+  "commitish" : "1.0",
+  "iOS" : [
+    {
+      "name" : "Framework1",
+      "hash" : "e8e1b64d1c07fe26a558b39130aa2ad8fb5febcca1725f8ea817af2aec3cd218"
+    }
+  ]
+}

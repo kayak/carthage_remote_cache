@@ -12,3 +12,5 @@ class MultipleErrorsError < AppError
 end
 
 class OutdatedFrameworkBuildError < AppError; end
+
+class MissingFrameworkDirectoryError < AppError; end
