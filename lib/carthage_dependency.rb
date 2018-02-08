@@ -1,3 +1,5 @@
+# Representation of a Cartfile.resolved entry.
+# @see https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#origin
 class CarthageDependency
   class << self
     # Parses Cartfile.resolved dependency entry, e.g.
@@ -7,29 +9,38 @@ class CarthageDependency
       matches = line.match(/^(\w+)\s+\"([^\"]+)\"(\s+\"([^\"]+)\")$/)
       return nil if matches.nil?
       if matches.length == 5
-        CarthageDependency.new(type: matches[1], repository: matches[2], version: matches[4])
+        CarthageDependency.new(origin: matches[1].to_sym, source: matches[2], version: matches[4])
       else
         nil
       end
     end
   end
 
-  attr_reader :type, :repository, :version
+  attr_reader :origin, :source, :version
 
   def initialize(args)
-    @type = args[:type]
-    @repository = args[:repository]
+    raise AppError.new, "Expected Symbol for origin '#{args[:origin]}'" unless args[:origin].kind_of? Symbol
+    raise AppError.new, "Unrecognized origin '#{args[:oriign]}'" unless [:github, :git, :binary].include?(args[:origin])
+
+    @origin = args[:origin]
+    @source = args[:source]
     @version = args[:version]
   end
 
   # Since one Cartfile.resolved entry may produce multiple differently named frameworks,
   # this is an entry point to identifying a framework name.
   def guessed_framework_basename
-    case @type
-    when "github"
-      repository.split("/").last
+    case @origin
+    when :github
+      @source.split("/").last
+    when :git
+      filename = @source.split("/").last
+      filename.chomp(".git")
+    when :binary
+      filename = @source.split("/").last
+      filename.chomp(".json")
     else
-      raise AppError.new, "Determining version_filename from #{@type} dependency is not yet supported"
+      raise AppError.new, "Unrecognized origin '#{@origin}'"
     end
   end
 
@@ -41,12 +52,27 @@ class CarthageDependency
     File.join(CARTHAGE_BUILD_DIR, version_filename)
   end
 
+  def should_include_dsym
+    case @origin
+    when :github
+      true
+    when :git
+      true
+    when :binary
+      false
+    else
+      raise AppError.new, "Unrecognized origin '#{@origin}'"
+    end
+  end
+
   def validate_version_file(version_file)
-    raise OutdatedFrameworkBuildError.new, version_validation_message(version_file) if @version != version_file.version
+    if @version != version_file.version
+      raise OutdatedFrameworkBuildError.new, version_validation_message(version_file)
+    end
   end
 
   def to_s
-    "#{@type} \"#{@repository}\" \"#{@version}\""
+    "#{@origin.to_s} \"#{@source}\" \"#{@version}\""
   end
 
   private

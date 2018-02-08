@@ -15,22 +15,33 @@ class CarthageArchive
   # - Carthage/Build/iOS/Alamofire.framework/Alamofire
   # - Carthage/Build/iOS/618BEB79-4C7F-3692-B140-131FB983AC5E.bcsymbolmap
   # into Alamofire-iOS.zip
-  def create_archive
+  def create_archive(should_include_dsym)
     $LOG.debug("Archiving #{@framework_name} for #{@platform}")
 
     platform_path = File.join(CARTHAGE_BUILD_DIR, platform_to_carthage_dir_string(@platform))
     framework_path = File.join(platform_path, "#{@framework_name}.framework")
     raise AppError.new, "Archive can't be created, no framework directory at #{framework_path}" unless Dir.exist?(framework_path)
 
+    # It's very likely, that binary releases don't contain DSYMs.
     dsym_path = File.join(platform_path, "#{@framework_name}.framework.dSYM")
-    raise AppError.new, "DSYM File #{dsym_path} is missing" unless File.exist?(dsym_path)
+    unless File.exist?(dsym_path)
+      if should_include_dsym
+        raise AppError.new, "DSYM File #{dsym_path} not found"
+      else
+        $LOG.error("DSYM File #{dsym_path} not found, continuing")
+        dsym_path = nil
+      end
+    end
 
     binary_path = File.join(framework_path, @framework_name)
     raise AppError.new, "Binary #{binary_path} is missing, failed to read .bcsymbolmap files" unless File.exist?(binary_path)
 
     bcsymbolmap_paths = find_bcsymbolmap_paths(platform_path, binary_path)
 
-    archived_paths = [framework_path, dsym_path] + bcsymbolmap_paths
+    archived_paths = []
+    archived_paths << framework_path
+    archived_paths << dsym_path unless dsym_path.nil?
+    archived_paths += bcsymbolmap_paths
 
     $LOG.debug("Adding > #{archived_paths.inspect}")
 

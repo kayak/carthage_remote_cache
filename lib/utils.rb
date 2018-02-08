@@ -1,3 +1,5 @@
+# Execute arbitrary system command.
+# @return command output, bails on failure
 def sh(cmd)
   output = `#{cmd}`
   bail("Command `#{cmd}` failed!") unless $?.success?
