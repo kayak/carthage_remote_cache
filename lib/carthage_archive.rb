@@ -15,7 +15,7 @@ class CarthageArchive
   # - Carthage/Build/iOS/Alamofire.framework/Alamofire
   # - Carthage/Build/iOS/618BEB79-4C7F-3692-B140-131FB983AC5E.bcsymbolmap
   # into Alamofire-iOS.zip
-  def create_archive(should_include_dsym)
+  def create_archive(shell, should_include_dsym)
     $LOG.debug("Archiving #{@framework_name} for #{@platform}")
 
     platform_path = File.join(CARTHAGE_BUILD_DIR, platform_to_carthage_dir_string(@platform))
@@ -36,24 +36,24 @@ class CarthageArchive
     binary_path = File.join(framework_path, @framework_name)
     raise AppError.new, "Binary #{binary_path} is missing, failed to read .bcsymbolmap files" unless File.exist?(binary_path)
 
-    bcsymbolmap_paths = find_bcsymbolmap_paths(platform_path, binary_path)
+    bcsymbolmap_paths = find_bcsymbolmap_paths(shell, platform_path, binary_path)
 
-    archived_paths = []
-    archived_paths << framework_path
-    archived_paths << dsym_path unless dsym_path.nil?
-    archived_paths += bcsymbolmap_paths
+    input_paths = []
+    input_paths << framework_path
+    input_paths << dsym_path unless dsym_path.nil?
+    input_paths += bcsymbolmap_paths
 
-    $LOG.debug("Adding > #{archived_paths.inspect}")
+    $LOG.debug("Adding > #{input_paths.inspect}")
 
     delete_archive
-    sh("zip -r #{quote @archive_path} #{quote archived_paths}")
+    shell.archive(input_paths, @archive_path)
     $LOG.debug("Created #{@archive_path} archive, file size: #{formatted_archive_size}")
   end
 
-  def unpack_archive
+  def unpack_archive(shell)
     raise AppError.new, "Archive #{@archive_path} is missing" unless File.exist?(@archive_path)
     $LOG.debug("Unpacking #{@archive_path}, file size: #{formatted_archive_size}")
-    sh("unzip -o #{quote @archive_path}")
+    shell.unpack(@archive_path)
   end
 
   def delete_archive
@@ -67,15 +67,11 @@ class CarthageArchive
 
   private
 
-  def find_bcsymbolmap_paths(platform_path, binary_path)
-    raw_dwarfdump = dwarfdump(binary_path)
+  def find_bcsymbolmap_paths(shell, platform_path, binary_path)
+    raw_dwarfdump = shell.dwarfdump(binary_path)
     uuids = parse_uuids(raw_dwarfdump)
     bcsymbolmap_paths = uuids.map { |uuid| File.join(platform_path, "#{uuid}.bcsymbolmap") }.select { |path| File.exist?(path) }
     bcsymbolmap_paths
-  end
-
-  def dwarfdump(binary_path)
-    sh("/usr/bin/xcrun dwarfdump --uuid \"#{binary_path}\"")
   end
 
   # Example dwarfdump link:

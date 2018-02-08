@@ -13,8 +13,12 @@ class Configuration
 
   attr_reader :xcodebuild_version, :swift_version, :carthage_dependencies, :server_uri
 
-  def initialize
-    initialize_env
+  def self.new_with_defaults
+    Configuration.new(ShellWrapper.new)
+  end
+
+  def initialize(shell)
+    initialize_env(shell)
     initialize_cartrcfile
   end
 
@@ -40,12 +44,12 @@ class Configuration
 
   private
 
-  def initialize_env
-    xcodebuild_raw_version = sh("xcodebuild -version")
+  def initialize_env(shell)
+    xcodebuild_raw_version = shell.xcodebuild_version
     @xcodebuild_version = xcodebuild_raw_version[/Build version (.*)$/, 1]
     raise AppError.new, "Could not parse build version from '#{xcodebuild_raw_version}'" if @xcodebuild_version.nil?
 
-    swift_raw_version = sh("swift -version")
+    swift_raw_version = shell.swift_version
     @swift_version = swift_raw_version[/Apple Swift version (.*) \(/, 1]
     raise AppError.new, "Could not parse swift version from '#{raw_swift_version}'" if @swift_version.nil?
 

@@ -1,5 +1,6 @@
 class API
-  def initialize(networking, options)
+  def initialize(shell, networking, options)
+    @shell = shell
     @networking = networking
     @options = options
   end
@@ -18,7 +19,7 @@ class API
   # @return zip archive size in Bytes
   def create_and_upload_archive(carthage_dependency, framework_name, platform)
     archive = CarthageArchive.new(framework_name, platform)
-    archive.create_archive(carthage_dependency.should_include_dsym)
+    archive.create_archive(@shell, carthage_dependency.should_include_dsym)
     archive_size = archive.archive_size
     begin
       @networking.upload_framework_archive(archive.archive_path, carthage_dependency, framework_name, platform)
@@ -35,7 +36,7 @@ class API
     archive_size = archive.archive_size
     begin
       $LOG.debug("Downloaded #{archive.archive_path}")
-      archive.unpack_archive
+      archive.unpack_archive(@shell)
     ensure
       archive.delete_archive
     end

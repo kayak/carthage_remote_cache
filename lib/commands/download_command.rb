@@ -1,11 +1,23 @@
 require 'concurrent'
 
 class DownloadCommand
-  def initialize(options)
-    @options = options
-    @config = Configuration.new
-    @networking = Networking.new(@config)
-    @api = API.new(@networking, options)
+  def self.new_with_defaults(options)
+    shell = ShellWrapper.new
+    config = Configuration.new(shell)
+    networking = Networking.new(config)
+    api = API.new(shell, networking, options)
+
+    DownloadCommand.new(
+      config: config,
+      networking: networking,
+      api: api,
+    )
+  end
+
+  def initialize(args)
+    @config = args[:config]
+    @networking = args[:networking]
+    @api = args[:api]
   end
 
   def run

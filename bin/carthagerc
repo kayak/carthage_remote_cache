@@ -71,13 +71,13 @@ begin
   command = ARGV[0]
   case command
   when "config"
-    puts Configuration.new
+    puts Configuration.new_with_defaults
   when "download"
-    DownloadCommand.new(options).run
+    DownloadCommand.new_with_defaults(options).run
   when "init"
     InitCommand.new(options).run
   when "upload"
-    UploadCommand.new(options).run
+    UploadCommand.new_with_defaults(options).run
   when "server"
     ServerCommand.new(options).run
   when "version"
