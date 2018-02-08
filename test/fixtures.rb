@@ -1,4 +1,5 @@
 FIXTURES_DIR = File.expand_path("../fixtures", __FILE__)
+FIXTURES_BUILD_DIR = File.join(FIXTURES_DIR, 'Build')
 
 class Fixtures
   class << self
@@ -7,7 +8,7 @@ class Fixtures
     end
 
     def lumberjack_path
-      File.join(FIXTURES_DIR, 'lumberjack.version')
+      File.join(FIXTURES_BUILD_DIR, '.lumberjack.version')
     end
 
     def baddie_version_file
@@ -15,7 +16,7 @@ class Fixtures
     end
 
     def baddie_path
-      File.join(FIXTURES_DIR, 'baddie.version')
+      File.join(FIXTURES_BUILD_DIR, '.baddie.version')
     end
   end
 end
