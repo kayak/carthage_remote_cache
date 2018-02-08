@@ -10,5 +10,5 @@ Rake::TestTask.new do |t|
 end
 
 task :format do
-  system('rufo bin/carthagerc lib test Gemfile Rakefile carthage_remote_cache.gemspec')
+  system('rufo bin/carthagerc lib test Gemfile Guardfile Rakefile carthage_remote_cache.gemspec')
 end

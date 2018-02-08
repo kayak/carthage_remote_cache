@@ -174,17 +174,27 @@ Documentation is also available when running `carthagerc` or `carthagerc --help`
 
 ## Development
 
+### Setup
+
 After checking out the repo, run `dev/setup` to install dependencies. You can also run `dev/console` for an interactive prompt that will allow you to experiment.
+
+### Development Server
 
 To start development server, run `dev/start_server`, which utilizes `rerun` for automatic reloading of source code and resources.
 
-Execute unit tests with `rake test`.
+### Tests
 
-Before committing, make sure to auto-format ruby source code wit `rake format`.
+Execute unit tests with `rake test` or start monitoring directories for changes with `bundle exec guard`.
+
+### Source Code Format
+
+Before committing, make sure to auto-format source code wit `rake format`.
+
+### Gem Lifecycle
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org/gems/carthage_remote_cache).
 
-### Example Folder
+### Experiments With Example Folder
 
 Repository is bundled with an example Carthage setup for your experiments. Open the [example](https://github.com/kayak/carthage_remote_cache/blob/master/example) folder, where you should be able to see following files, which are preconfigured to bring in a couple of frameworks:
 - Cartfile
