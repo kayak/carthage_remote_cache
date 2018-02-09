@@ -1,14 +1,4 @@
-# Execute arbitrary system command.
-# @return command output, bails on failure
-def sh(cmd)
-  output = `#{cmd}`
-  bail("Command '#{cmd}' failed!") unless $?.success?
-  output.strip
-end
-
-# Exits Ruby process, only to be called:
-# 1. If sh / system calls fail
-# 2. From top level `carthagerc` script
+# Exits Ruby process, only to be called from top level `carthagerc` script
 def bail(message, code = 1)
   $stderr.puts(message.strip + "\n")
   Process.exit(code)

@@ -1,3 +1,5 @@
+require 'open3'
+
 class ShellWrapper
   # @return
   #   Xcode 9.2
@@ -28,5 +30,18 @@ class ShellWrapper
 
   def unpack(archive_path)
     sh("unzip -o #{quote archive_path}")
+  end
+
+  private
+
+  # @return command output if successful
+  # @raise CmdError
+  def sh(command)
+    stdout, stderr, status = Open3.capture3(command)
+    if status.success?
+      stdout.strip
+    else
+      raise CmdError.new(command), "Command '#{command}' failed, error output:\n#{stderr.strip}"
+    end
   end
 end

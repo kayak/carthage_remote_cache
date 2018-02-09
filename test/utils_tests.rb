@@ -3,13 +3,6 @@ require 'carthage_remote_cache'
 
 class UtilsTests < Test::Unit::TestCase
 
-  # sh
-
-  def test_sh
-    output = sh('echo "Hello, world!"')
-    assert_equal('Hello, world!', output)
-  end
-
   # quote
 
   def test_quote_string
