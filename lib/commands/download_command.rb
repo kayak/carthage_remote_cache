@@ -72,12 +72,8 @@ class DownloadCommand
     version_file.frameworks_by_platform.each do |platform, framework_names|
       for framework_name in framework_names
         archive_size = @api.download_and_unpack_archive(carthage_dependency, framework_name, platform)
-        if archive_size.nil?
-          raise AppError.new, "Failed to download framework #{carthage_dependency} – #{framework_name} (#{platform}). Please `upload` the framework first."
-        else
-          @number_of_downloaded_archives += 1
-          @total_archive_size += archive_size
-        end
+        @number_of_downloaded_archives += 1
+        @total_archive_size += archive_size
       end
     end
     version_file.move_to_build_dir

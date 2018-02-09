@@ -8,6 +8,7 @@ class Networking
 
   # Version Files
 
+  # @return VersionFile or nil
   def download_version_file(carthage_dependency)
     url = new_version_file_url(carthage_dependency)
     $LOG.debug("Downloading version file from #{url}")
@@ -22,14 +23,20 @@ class Networking
     version_file
   end
 
+  # @raise AppError on upload failure
   def upload_version_file(carthage_dependency)
     url = new_version_file_url(carthage_dependency)
     $LOG.debug("Uploading #{carthage_dependency.version_filename}")
-    RestClient.post(url, :version_file => File.new(carthage_dependency.version_filepath))
+    RestClient.post(url, :version_file => File.new(carthage_dependency.version_filepath)) do |response, request, result|
+      unless response.code == 200
+        raise AppError.new, "Version file upload #{carthage_dependency.version_filename} failed, response:\n  #{response[0..300]}"
+      end
+    end
   end
 
   #  Archives
 
+  # @return Hash with CarthageArchive and checksum or nil
   def download_framework_archive(carthage_dependency, framework_name, platform)
     url = new_framework_url(carthage_dependency, framework_name, platform)
     $LOG.debug("Downloading framework from #{url}")
@@ -37,7 +44,7 @@ class Networking
       if response.code == 200
         archive = CarthageArchive.new(framework_name, platform)
         File.write(archive.archive_path, response.to_s)
-        archive
+        {:archive => archive, :checksum => response.headers[ARCHIVE_CHECKSUM_HEADER_REST_CLIENT]}
       else
         nil
       end
@@ -45,10 +52,17 @@ class Networking
     archive
   end
 
-  def upload_framework_archive(zipfile_name, carthage_dependency, framework_name, platform)
+  # @raise AppError when upload fails
+  def upload_framework_archive(zipfile_name, carthage_dependency, framework_name, platform, checksum)
     url = new_framework_url(carthage_dependency, framework_name, platform)
-    $LOG.debug("Uploading framework to #{url}")
-    RestClient.post(url, :framework_file => File.new(zipfile_name))
+    params = {:framework_file => File.new(zipfile_name)}
+    headers = {ARCHIVE_CHECKSUM_HEADER_REST_CLIENT => checksum}
+    $LOG.debug("Uploading framework to #{url}, headers: #{headers}")
+    RestClient.post(url, params, headers) do |response, request, result|
+      unless response.code == 200
+        raise AppError.new, "Framework upload #{zipfile_name} failed, response:\n  #{response[0..300]}"
+      end
+    end
   end
 
   private

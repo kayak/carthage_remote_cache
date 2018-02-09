@@ -27,6 +27,10 @@ class Fixtures
 
     # @!group Framework1
 
+    def framework1_version_path
+      File.join(FIXTURES_BUILD_DIR, '.Framework1.version')
+    end
+
     def framework1_dir_path
       File.join(FIXTURES_BUILD_IOS_DIR, 'Framework1.framework')
     end

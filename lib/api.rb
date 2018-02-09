@@ -22,17 +22,30 @@ class API
     archive.create_archive(@shell, carthage_dependency.should_include_dsym)
     archive_size = archive.archive_size
     begin
-      @networking.upload_framework_archive(archive.archive_path, carthage_dependency, framework_name, platform)
+      checksum = crc32(archive.archive_path)
+      @networking.upload_framework_archive(archive.archive_path, carthage_dependency, framework_name, platform, checksum)
     ensure
       archive.delete_archive
     end
     archive_size
   end
 
-  # @return zip archive size in Bytes or nil if archive download failed
+  # @return zip archive size in Bytes
+  # @raise AppError if download or checksum validation fails
   def download_and_unpack_archive(carthage_dependency, framework_name, platform)
-    archive = @networking.download_framework_archive(carthage_dependency, framework_name, platform)
-    return nil if archive.nil?
+    result = @networking.download_framework_archive(carthage_dependency, framework_name, platform)
+    if result.nil?
+      raise AppError.new, "Failed to download framework #{carthage_dependency} – #{framework_name} (#{platform}). Please `upload` the framework first."
+    end
+
+    archive = result[:archive]
+    remote_checksum = result[:checksum]
+    local_checksum = crc32(archive.archive_path)
+
+    if local_checksum != remote_checksum
+      raise AppError.new, checksum_error_message(archive.archive_path, remote_checksum, local_checksum)
+    end
+
     archive_size = archive.archive_size
     begin
       $LOG.debug("Downloaded #{archive.archive_path}")
@@ -41,5 +54,15 @@ class API
       archive.delete_archive
     end
     archive_size
+  end
+
+  private
+
+  def checksum_error_message(path, remote, local)
+    <<~EOS
+      Checksums for '#{path}' do not match:
+        Remote: #{remote}
+        Local:  #{local}
+    EOS
   end
 end

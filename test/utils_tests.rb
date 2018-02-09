@@ -1,7 +1,15 @@
 require 'test/unit'
 require 'carthage_remote_cache'
+require 'fixtures'
 
 class UtilsTests < Test::Unit::TestCase
+
+  # crc32
+
+  def test_crc32
+    checksum = crc32(Fixtures.framework1_version_path)
+    assert_equal('92fa717d', checksum)
+  end
 
   # quote
 

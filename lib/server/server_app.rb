@@ -47,15 +47,18 @@ get frameworks_path do
   filename = File.join(dirname, archive.archive_filename)
 
   if File.exist?(filename)
+    headers[ARCHIVE_CHECKSUM_HEADER_SINATRA_OUT] = crc32(filename)
     status(200)
     send_file(filename)
   else
     status(404)
+    "Missing framework archive at '#{filename}'"
   end
 end
 
 # Upload framework archive. Overwrites already cached archive if exists.
 post frameworks_path do
+  expected_checksum = request.env[ARCHIVE_CHECKSUM_HEADER_SINATRA_IN]
   filename = params[:framework_file][:filename]
   source_file = params[:framework_file][:tempfile]
 
@@ -70,7 +73,16 @@ post frameworks_path do
     target_file.write(source_file.read)
   end
 
-  status(200)
+  checksum = crc32(target_filename)
+  if checksum == expected_checksum
+    status(200)
+  else
+    File.delete(target_filename)
+    message = "Checksums for '#{target_filename}' don't match. Expected '#{expected_checksum}', got '#{checksum}'"
+    $LOG.error(message)
+    status(500)
+    message
+  end
 end
 
 private

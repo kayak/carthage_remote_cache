@@ -4,6 +4,12 @@ def bail(message, code = 1)
   Process.exit(code)
 end
 
+def crc32(filename)
+  checksum = Digest::CRC32.file(filename).hexdigest
+  $LOG.debug("CRC32 checksum for '#{filename}': #{checksum}")
+  checksum
+end
+
 # Quote command line arguments with double quotes.
 # Useful for file paths with spaces.
 def quote(input)
