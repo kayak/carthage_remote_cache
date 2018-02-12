@@ -25,6 +25,7 @@ class UploadCommand
 
     $LOG.debug("Will upload frameworks: #{@config.all_framework_names}")
 
+    @mutex = Mutex.new
     @number_of_uploaded_archives = 0
     @number_of_skipped_archives = 0
     @total_archive_size = 0
@@ -61,7 +62,9 @@ class UploadCommand
 
     if @api.version_file_matches_server?(carthage_dependency, version_file)
       $LOG.debug("Version file #{version_file.path} matches server version, skipping upload")
-      @number_of_skipped_archives += version_file.number_of_frameworks
+      @mutex.synchronize do
+        @number_of_skipped_archives += version_file.number_of_frameworks
+      end
       return
     end
 
@@ -70,8 +73,10 @@ class UploadCommand
     version_file.frameworks_by_platform.each do |platform, framework_names|
       for framework_name in framework_names
         archive_size = @api.create_and_upload_archive(carthage_dependency, framework_name, platform)
-        @number_of_uploaded_archives += 1
-        @total_archive_size += archive_size
+        @mutex.synchronize do
+          @number_of_uploaded_archives += 1
+          @total_archive_size += archive_size
+        end
       end
     end
   end

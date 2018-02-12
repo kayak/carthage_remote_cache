@@ -23,6 +23,7 @@ class DownloadCommand
   def run
     pool = Concurrent::FixedThreadPool.new(THREAD_POOL_SIZE)
 
+    @mutex = Mutex.new
     @number_of_downloaded_archives = 0
     @number_of_skipped_archives = 0
     @total_archive_size = 0
@@ -62,7 +63,9 @@ class DownloadCommand
 
     if !local_version_file.nil? && @api.version_file_matches_server?(carthage_dependency, local_version_file)
       $LOG.debug("Version file #{local_version_file.path} matches server version, skipping download")
-      @number_of_skipped_archives += local_version_file.number_of_frameworks
+      @mutex.synchronize do
+        @number_of_skipped_archives += local_version_file.number_of_frameworks
+      end
       return
     end
 
@@ -72,8 +75,10 @@ class DownloadCommand
     version_file.frameworks_by_platform.each do |platform, framework_names|
       for framework_name in framework_names
         archive_size = @api.download_and_unpack_archive(carthage_dependency, framework_name, platform)
-        @number_of_downloaded_archives += 1
-        @total_archive_size += archive_size
+        @mutex.synchronize do
+          @number_of_downloaded_archives += 1
+          @total_archive_size += archive_size
+        end
       end
     end
     version_file.move_to_build_dir
