@@ -6,8 +6,14 @@ get '/' do
   "Welcome to carthage_remote_cache"
 end
 
+version_path = '/version'
 versions_path = '/versions/:xcodebuild_version/:swift_version/:dependency_name/:version/:version_filename'
 frameworks_path = '/frameworks/:xcodebuild_version/:swift_version/:dependency_name/:version/:framework_name/:platform'
+
+get version_path do
+  status(200)
+  VERSION
+end
 
 get versions_path do
   dirname = params_to_framework_dir(params)

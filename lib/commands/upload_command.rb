@@ -21,6 +21,8 @@ class UploadCommand
   end
 
   def run
+    @api.verify_server_version
+
     pool = Concurrent::FixedThreadPool.new(THREAD_POOL_SIZE)
 
     $LOG.debug("Will upload frameworks: #{@config.all_framework_names}")

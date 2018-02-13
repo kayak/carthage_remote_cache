@@ -6,6 +6,21 @@ class Networking
     @config = config
   end
 
+  # Version
+
+  def get_server_version
+    url = new_version_url
+    $LOG.debug("Fetching server version from #{url}")
+    server_version = RestClient.get(url) do |response, request, result|
+      if response.code == 200
+        response.strip
+      else
+        raise AppError.new, "Failed to read server version from #{url}, response:\n  #{response[0...300]}"
+      end
+    end
+    server_version
+  end
+
   # Version Files
 
   # @return VersionFile or nil
@@ -66,6 +81,10 @@ class Networking
   end
 
   private
+
+  def new_version_url
+    new_server_url(['version'])
+  end
 
   def new_version_file_url(carthage_dependency)
     new_server_url([

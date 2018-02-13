@@ -22,3 +22,5 @@ end
 class OutdatedFrameworkBuildError < AppError; end
 
 class MissingFrameworkDirectoryError < AppError; end
+
+class VersionMismatchError < AppError; end

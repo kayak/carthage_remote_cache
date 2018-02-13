@@ -5,6 +5,13 @@ class API
     @options = options
   end
 
+  def verify_server_version
+    server_version = @networking.get_server_version
+    unless server_version == VERSION
+      raise VersionMismatchError.new, version_mismatch_message(server_version)
+    end
+  end
+
   def version_file_matches_server?(carthage_dependency, version_file)
     if @options[:force]
       false
@@ -57,6 +64,17 @@ class API
   end
 
   private
+
+  def version_mismatch_message(server_version)
+    <<~EOS
+      Version mismatch:
+        Cache server version: #{server_version}
+        Client version:       #{VERSION}
+
+      Please use the same version as cache server by running:
+      $ gem install carthage_remote_cache -v #{server_version}
+    EOS
+  end
 
   def checksum_error_message(path, remote, local)
     <<~EOS

@@ -122,6 +122,19 @@ Server is bound to port 9292 by default. If you need to use different port, spec
 
 Don't forget to change port number in your version controlled `Cartrcfile`.
 
+#### Version Compatibility
+
+Before each `carthagerc [upload|download]`, the script compares its version number against cache server. If the version doesn't match, `carthagerc` aborts with:
+
+    Version mismatch:
+      Cache server version: 0.0.7
+      Client version:       0.0.6
+
+    Please use the same version as cache server is using by running:
+    $ gem install carthage_remote_cache -v 0.0.7
+
+Please note, that this functionality only works with clients starting with version [0.0.6](https://github.com/kayak/carthage_remote_cache/releases/tag/0.0.6).
+
 #### Directory Structure
 
 Cache server stores version files and framework archives in following directory structure:

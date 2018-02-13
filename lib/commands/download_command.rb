@@ -21,6 +21,8 @@ class DownloadCommand
   end
 
   def run
+    @api.verify_server_version
+
     pool = Concurrent::FixedThreadPool.new(THREAD_POOL_SIZE)
 
     @mutex = Mutex.new
