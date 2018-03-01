@@ -11,14 +11,15 @@ class Configuration
     yield(@@user_config)
   end
 
-  attr_reader :xcodebuild_version, :swift_version, :carthage_dependencies, :server_uri
+  attr_reader :carthage_resolved_dependencies, :server_uri
 
   def self.new_with_defaults
     Configuration.new(ShellWrapper.new)
   end
 
   def initialize(shell)
-    initialize_env(shell)
+    @shell = shell
+    initialize_cartfile_resolved
     initialize_cartrcfile
   end
 
@@ -26,16 +27,40 @@ class Configuration
     version_files.flat_map { |vf| vf.framework_names }.uniq.sort
   end
 
+  # Ensure, that these lazy properties are loaded before kicking off async code.
+  def ensure_shell_commands
+    xcodebuild_version
+    swift_version
+  end
+
+  def xcodebuild_version
+    if @xcodebuild_version.nil?
+      xcodebuild_raw_version = @shell.xcodebuild_version
+      @xcodebuild_version = xcodebuild_raw_version[/Build version (.*)$/, 1]
+      raise AppError.new, "Could not parse build version from '#{xcodebuild_raw_version}'" if @xcodebuild_version.nil?
+    end
+    @xcodebuild_version
+  end
+
+  def swift_version
+    if @swift_version.nil?
+      swift_raw_version = @shell.swift_version
+      @swift_version = swift_raw_version[/Apple Swift version (.*) \(/, 1]
+      raise AppError.new, "Could not parse swift version from '#{raw_swift_version}'" if @swift_version.nil?
+    end
+    @swift_version
+  end
+
   def to_s
     <<~EOS
-      Xcodebuild: #{@xcodebuild_version}
+      Xcodebuild: #{xcodebuild_version}
       ---
-      Swift: #{@swift_version}
+      Swift: #{swift_version}
       ---
       Server: #{@server_uri.to_s}
       ---
       Cartfile.resolved:
-      #{@carthage_dependencies.join("\n")}
+      #{@carthage_resolved_dependencies.join("\n")}
       ---
       Local Build Frameworks:
       #{framework_names_with_platforms.join("\n")}
@@ -44,17 +69,9 @@ class Configuration
 
   private
 
-  def initialize_env(shell)
-    xcodebuild_raw_version = shell.xcodebuild_version
-    @xcodebuild_version = xcodebuild_raw_version[/Build version (.*)$/, 1]
-    raise AppError.new, "Could not parse build version from '#{xcodebuild_raw_version}'" if @xcodebuild_version.nil?
-
-    swift_raw_version = shell.swift_version
-    @swift_version = swift_raw_version[/Apple Swift version (.*) \(/, 1]
-    raise AppError.new, "Could not parse swift version from '#{raw_swift_version}'" if @swift_version.nil?
-
+  def initialize_cartfile_resolved
     raise AppError.new, "Misssing #{CARTFILE_RESOLVED}" unless File.exist?(CARTFILE_RESOLVED)
-    @carthage_dependencies = File.readlines(CARTFILE_RESOLVED)
+    @carthage_resolved_dependencies = File.readlines(CARTFILE_RESOLVED)
       .map { |line| CarthageDependency.parse_cartfile_resolved_line(line) }
       .compact
   end
@@ -79,6 +96,6 @@ class Configuration
   end
 
   def version_files
-    @carthage_dependencies.map { |d| VersionFile.new(d.version_filepath) }
+    @carthage_resolved_dependencies.map { |d| d.new_version_file }
   end
 end

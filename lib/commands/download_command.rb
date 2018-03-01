@@ -5,7 +5,7 @@ class DownloadCommand
     shell = ShellWrapper.new
     config = Configuration.new(shell)
     networking = Networking.new(config)
-    api = API.new(shell, networking, options)
+    api = API.new(shell, config, networking, options)
 
     DownloadCommand.new(
       config: config,
@@ -21,6 +21,7 @@ class DownloadCommand
   end
 
   def run
+    @config.ensure_shell_commands
     @api.verify_server_version
 
     pool = Concurrent::FixedThreadPool.new(THREAD_POOL_SIZE)
@@ -31,7 +32,7 @@ class DownloadCommand
     @total_archive_size = 0
     errors = Concurrent::Array.new
 
-    for carthage_dependency in @config.carthage_dependencies
+    for carthage_dependency in @config.carthage_resolved_dependencies
       pool.post(carthage_dependency) do |carthage_dependency|
         begin
           download(carthage_dependency)
@@ -58,7 +59,7 @@ class DownloadCommand
   def download(carthage_dependency)
     local_version_file =
       if File.exist?(carthage_dependency.version_filepath)
-        VersionFile.new(carthage_dependency.version_filepath)
+        carthage_dependency.new_version_file
       else
         nil
       end

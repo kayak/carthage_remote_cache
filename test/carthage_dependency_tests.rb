@@ -76,19 +76,19 @@ class CarthageDependencyTests < Test::Unit::TestCase
     assert_equal('.MyFramework.txt.version', carthage_dependency.version_filename)
   end
 
-  # validate_version_file
+  # verify_version_in_version_file
 
-  def test_validate_version_file_success
+  def test_verify_version_in_version_file_success
     carthage_dependency = CarthageDependency.new(:origin => :github, :source => 'hello/baddie', :version => '2.1.6')
     assert_nothing_raised do
-      carthage_dependency.validate_version_file(Fixtures.baddie_version_file)
+      carthage_dependency.verify_version_in_version_file(Fixtures.baddie_version_file)
     end
   end
 
-  def test_validate_version_file_outdated_build_version
+  def test_verify_version_in_version_file_outdated_build_version
     carthage_dependency = CarthageDependency.new(:origin => :github, :source => 'hello/baddie', :version => '2.1.8')
-    assert_raises OutdatedFrameworkBuildError do
-      carthage_dependency.validate_version_file(Fixtures.baddie_version_file)
+    assert_raises OutdatedFrameworkBuildError.new('baddie', '2.1.6', '2.1.8') do
+      carthage_dependency.verify_version_in_version_file(Fixtures.baddie_version_file)
     end
   end
 end

@@ -27,6 +27,10 @@ class CarthageDependency
     @version = args[:version]
   end
 
+  def new_version_file
+    VersionFile.new(version_filepath)
+  end
+
   # Since one Cartfile.resolved entry may produce multiple differently named frameworks,
   # this is an entry point to identifying a framework name.
   def guessed_framework_basename
@@ -65,25 +69,13 @@ class CarthageDependency
     end
   end
 
-  def validate_version_file(version_file)
+  def verify_version_in_version_file(version_file)
     if @version != version_file.version
-      raise OutdatedFrameworkBuildError.new, version_validation_message(version_file)
+      raise OutdatedFrameworkBuildError.new(guessed_framework_basename, version_file.version, @version)
     end
   end
 
   def to_s
     "#{@origin.to_s} \"#{@source}\" \"#{@version}\""
-  end
-
-  private
-
-  def version_validation_message(version_file)
-    <<~EOS
-      Outdated version of '#{guessed_framework_basename}' framework detected:
-        Expected version '#{@version}'
-        Found version '#{version_file.version}'
-
-      Please run `carthage bootstrap` to build frameworks.
-    EOS
   end
 end

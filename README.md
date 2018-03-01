@@ -105,6 +105,39 @@ Which will print similar information:
     Local Build Frameworks:
     Attributions 0.3 [:iOS]
 
+### Verify Framework Versions
+
+When switching between development branches, it's very easy to lose track of whether existing framework binaries in `Carthage/Build` match version numbers from `Cartfile.resolved`. As a result, you will probably lose several minutes of your development time, because `Xcode` doesn't tell you about outdated or missing framework binaries.
+
+Luckily, `carthage_remote_cache` provides following command:
+
+    carthagerc verify
+
+If existing frameworks match `Cartfile.resolved`, script exits with `0` and doesn't print anything.
+
+In the event of framework version mismatch, you'll be able to observe following output:
+
+    Detected differences between existing frameworks in 'Carthage/Build' and entries in 'Cartfile.resolved':
+
+    +-----------------+----------------+-------------------+
+    | Framework       | Carthage/Build | Cartfile.resolved |
+    +-----------------+----------------+-------------------+
+    | CocoaLumberjack |          3.2.1 |             3.4.1 |
+    | PhoneNumberKit  |          1.3.0 |             2.1.0 |
+    | HelloWorld      |              - |             3.0.0 |
+    +-----------------+----------------+-------------------+
+
+    To resolve the issue:
+    - run `carthagerc download` to fetch missing frameworks from the server.
+    - if the issue persists, run `carthage bootstrap` to build frameworks and `carthagerc upload` to populate the server.
+
+#### Git Hook
+
+Running `carthagerc verify` manually on every git checkout / merge / pull could be quite cumbersome. To automate this task, integrate following script [carthagerc-verify-githook](https://github.com/kayak/carthage_remote_cache/blob/master/integrations/carthagerc-verify-githook) into your repository's git hooks, e.g. `post-checkout`.
+
+See `$ man githooks` for all available git hooks and their documentation.
+
+
 ### Cache Server
 
 Start the server with
@@ -161,7 +194,7 @@ It's safe to delete whole directories since no other metadata is stored.
 
 #### Launch Agent
 
-You can also run the cache server as a launch agent. Copy the template [com.kayak.carthagerc.server.plist](https://github.com/kayak/carthage_remote_cache/blob/master/com.kayak.carthagerc.server.plist) file to `~/Library/LaunchAgents`, change log
+You can also run the cache server as a launch agent. Copy the template [com.kayak.carthagerc.server.plist](https://github.com/kayak/carthage_remote_cache/blob/master/integrations/com.kayak.carthagerc.server.plist) file to `~/Library/LaunchAgents`, change log
 paths to include your username and run:
 
     $ launchctl load -w ~/Library/LaunchAgents/com.kayak.carthagerc.server.plist
@@ -199,6 +232,9 @@ Documentation is also available when running `carthagerc` or `carthagerc --help`
 
         server [-pPORT|--port=PORT]
             start cache server
+
+        verify
+            compare versions from Cartfile.resolved to existing frameworks in Carthage/Build
 
         version
             print current version number

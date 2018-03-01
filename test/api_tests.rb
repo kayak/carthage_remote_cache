@@ -7,9 +7,10 @@ require 'mocha/test_unit'
 class APITests < Test::Unit::TestCase
   def setup
     @shell = mock()
+    @config = mock()
     @networking = mock()
     @options = {}
-    @api = API.new(@shell, @networking, @options)
+    @api = API.new(@shell, @config, @networking, @options)
   end
 
   # @!group verify_server_version
@@ -23,7 +24,7 @@ class APITests < Test::Unit::TestCase
 
   def test_server_returns_different_version
     @networking.expects(:get_server_version).returns('0.0.1')
-    assert_raises VersionMismatchError do
+    assert_raises ServerVersionMismatchError do
       @api.verify_server_version
     end
   end

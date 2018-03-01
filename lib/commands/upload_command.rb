@@ -5,7 +5,7 @@ class UploadCommand
     shell = ShellWrapper.new
     config = Configuration.new(shell)
     networking = Networking.new(config)
-    api = API.new(shell, networking, options)
+    api = API.new(shell, config, networking, options)
 
     UploadCommand.new(
       config: config,
@@ -21,7 +21,9 @@ class UploadCommand
   end
 
   def run
+    @config.ensure_shell_commands
     @api.verify_server_version
+    @api.verify_build_dir_matches_cartfile_resolved
 
     pool = Concurrent::FixedThreadPool.new(THREAD_POOL_SIZE)
 
@@ -33,7 +35,7 @@ class UploadCommand
     @total_archive_size = 0
     errors = Concurrent::Array.new
 
-    for carthage_dependency in @config.carthage_dependencies
+    for carthage_dependency in @config.carthage_resolved_dependencies
       pool.post(carthage_dependency) do |carthage_dependency|
         begin
           upload(carthage_dependency)
@@ -58,9 +60,7 @@ class UploadCommand
   private
 
   def upload(carthage_dependency)
-    version_file = VersionFile.new(carthage_dependency.version_filepath)
-
-    carthage_dependency.validate_version_file(version_file)
+    version_file = carthage_dependency.new_version_file
 
     if @api.version_file_matches_server?(carthage_dependency, version_file)
       $LOG.debug("Version file #{version_file.path} matches server version, skipping upload")

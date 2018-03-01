@@ -42,6 +42,9 @@ opt_parser = OptionParser.new do |opt|
   opt.separator "    server [-pPORT|--port=PORT]"
   opt.separator "        start cache server"
   opt.separator ""
+  opt.separator "    verify"
+  opt.separator "        compare versions from #{CARTFILE_RESOLVED} to existing frameworks in #{CARTHAGE_BUILD_DIR}"
+  opt.separator ""
   opt.separator "    version"
   opt.separator "        print current version number"
   opt.separator ""
@@ -80,10 +83,12 @@ begin
     UploadCommand.new_with_defaults(options).run
   when "server"
     ServerCommand.new(options).run
+  when "verify"
+    VerifyCommand.new_with_defaults(options).run
   when "version"
     puts VERSION
   else
-    bail("Unsupported command #{command}, run with --help to show available commands")
+    bail("Unsupported command #{command}, run with --help to show available commands or see README at https://github.com/kayak/carthage_remote_cache")
   end
 rescue AppError => e
   bail(e.message)

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Notifies user on `carthagerc verify` failure.
+
+yellow='\033[0;33m'
+no_color='\033[0m'
+
+if which carthagerc > /dev/null; then
+	verify_output=$(carthagerc verify 2>&1)
+	if [[ ! -z "$verify_output" ]]; then
+		echo -e "\n${yellow}WARNING: \`carthagerc verify\` failed:${no_color}"
+        echo "$verify_output"
+	fi
+else
+	echo -e "\n${yellow}WARNING: Please run \`gem install carthage_remote_cache\` to install carthagerc https://github.com/kayak/carthage_remote_cache${no_color}"
+fi

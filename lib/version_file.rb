@@ -62,7 +62,7 @@ class VersionFile
   private
 
   def parse
-    raise AppError.new, "File #{path} doesn't exist, has carthage been bootstrapped?" unless File.exist?(@path)
+    raise VersionFileDoesNotExistError.new, "File #{path} doesn't exist, has carthage been bootstrapped?" unless File.exist?(@path)
 
     file = File.read(@path)
     json = JSON.parse(file)

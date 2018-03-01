@@ -4,6 +4,14 @@ require 'fixtures'
 
 class VersionFileTests < Test::Unit::TestCase
 
+  # initialize
+
+  def test_framework_does_not_exist
+    assert_raises VersionFileDoesNotExistError do
+      Fixtures.nonexistent_version_file
+    end
+  end
+
   # version
 
   def test_version_lumberjack

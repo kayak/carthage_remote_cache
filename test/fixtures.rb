@@ -5,6 +5,16 @@ FIXTURES_BUILD_IOS_DIR = File.join(FIXTURES_BUILD_DIR, 'iOS')
 class Fixtures
   class << self
 
+    # @!group nonexistent
+
+    def nonexistent_version_file
+      VersionFile.new(nonexistent_version_file_path)
+    end
+
+    def nonexistent_version_file_path
+      File.join(FIXTURES_BUILD_DIR, '.nonexistent.version')
+    end
+
     # @!group lumberjack
 
     def lumberjack_version_file

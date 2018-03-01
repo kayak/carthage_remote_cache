@@ -1,6 +1,7 @@
 class API
-  def initialize(shell, networking, options)
+  def initialize(shell, config, networking, options)
     @shell = shell
+    @config = config
     @networking = networking
     @options = options
   end
@@ -8,7 +9,28 @@ class API
   def verify_server_version
     server_version = @networking.get_server_version
     unless server_version == VERSION
-      raise VersionMismatchError.new, version_mismatch_message(server_version)
+      raise ServerVersionMismatchError.new, version_mismatch_message(server_version)
+    end
+  end
+
+  def verify_build_dir_matches_cartfile_resolved
+    errors = []
+    for carthage_dependency in @config.carthage_resolved_dependencies
+      begin
+        version_file = carthage_dependency.new_version_file
+        carthage_dependency.verify_version_in_version_file(version_file)
+      rescue VersionFileDoesNotExistError => e
+        errors << OutdatedFrameworkBuildError.new(
+          carthage_dependency.guessed_framework_basename,
+          '-',
+          carthage_dependency.version
+        )
+      rescue OutdatedFrameworkBuildError => e
+        errors << e
+      end
+    end
+    if errors.count > 0
+      raise FrameworkValidationError.new(errors)
     end
   end
 
