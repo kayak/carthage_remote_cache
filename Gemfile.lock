@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    carthage_remote_cache (0.0.7)
+    carthage_remote_cache (0.0.8)
       concurrent-ruby (~> 1.0.5)
       rack (~> 2.0.4)
       rest-client (~> 2.0.2)
@@ -12,7 +12,7 @@ GEM
   specs:
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
-    domain_name (0.5.20170404)
+    domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     ffi (1.9.21)
     formatador (0.2.5)
@@ -53,7 +53,7 @@ GEM
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
-    rack (2.0.4)
+    rack (2.0.5)
     rack-protection (2.0.1)
       rack
     rake (10.5.0)
