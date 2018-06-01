@@ -15,7 +15,7 @@ class CarthageArchive
   # - Carthage/Build/iOS/Alamofire.framework/Alamofire
   # - Carthage/Build/iOS/618BEB79-4C7F-3692-B140-131FB983AC5E.bcsymbolmap
   # into Alamofire-iOS.zip
-  def create_archive(shell, should_include_dsym, carthage_build_dir = CARTHAGE_BUILD_DIR)
+  def create_archive(shell, carthage_build_dir = CARTHAGE_BUILD_DIR)
     $LOG.debug("Archiving #{@framework_name} for #{@platform}")
 
     platform_path = File.join(carthage_build_dir, platform_to_carthage_dir_string(@platform))
@@ -25,12 +25,8 @@ class CarthageArchive
     # It's very likely, that binary releases don't contain DSYMs.
     dsym_path = File.join(platform_path, "#{@framework_name}.framework.dSYM")
     unless File.exist?(dsym_path)
-      if should_include_dsym
-        raise AppError.new, "DSYM File #{dsym_path} not found"
-      else
-        $LOG.error("DSYM File #{dsym_path} not found, continuing")
-        dsym_path = nil
-      end
+      $LOG.error("DSYM File #{dsym_path} not found, continuing")
+      dsym_path = nil
     end
 
     binary_path = File.join(framework_path, @framework_name)

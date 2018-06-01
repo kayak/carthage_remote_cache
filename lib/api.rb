@@ -48,7 +48,7 @@ class API
   # @return zip archive size in Bytes
   def create_and_upload_archive(carthage_dependency, framework_name, platform)
     archive = CarthageArchive.new(framework_name, platform)
-    archive.create_archive(@shell, carthage_dependency.should_include_dsym)
+    archive.create_archive(@shell)
     archive_size = archive.archive_size
     begin
       checksum = crc32(archive.archive_path)

@@ -56,19 +56,6 @@ class CarthageDependency
     File.join(CARTHAGE_BUILD_DIR, version_filename)
   end
 
-  def should_include_dsym
-    case @origin
-    when :github
-      true
-    when :git
-      true
-    when :binary
-      false
-    else
-      raise AppError.new, "Unrecognized origin '#{@origin}'"
-    end
-  end
-
   def verify_version_in_version_file(version_file)
     if @version != version_file.version
       raise OutdatedFrameworkBuildError.new(guessed_framework_basename, version_file.version, @version)

@@ -20,7 +20,7 @@ class CarthageArchiveTests < Test::Unit::TestCase
 
     archive = CarthageArchive.new('Framework1', :iOS)
     begin
-      archive.create_archive(shell, should_include_dsym = true, FIXTURES_BUILD_DIR)
+      archive.create_archive(shell, FIXTURES_BUILD_DIR)
       assert_true(File.exist?('Framework1-iOS.zip'))
       assert_equal(5, archive.archive_size)
     ensure
@@ -31,7 +31,7 @@ class CarthageArchiveTests < Test::Unit::TestCase
   def test_create_archive_invalid_framework
     archive = CarthageArchive.new('InvalidFramework', :iOS)
     assert_raises MissingFrameworkDirectoryError do
-      archive.create_archive(nil, should_include_dsym = true, FIXTURES_BUILD_DIR)
+      archive.create_archive(nil, FIXTURES_BUILD_DIR)
     end
   end
 
