@@ -4,6 +4,7 @@ class API
     @config = config
     @networking = networking
     @options = options
+    @unpack_mutex = Mutex.new
   end
 
   def verify_server_version
@@ -78,7 +79,10 @@ class API
     archive_size = archive.archive_size
     begin
       $LOG.debug("Downloaded #{archive.archive_path}")
-      archive.unpack_archive(@shell)
+      # Can't unpack multiple archives concurrently.
+      @unpack_mutex.synchronize do
+        archive.unpack_archive(@shell)
+      end
     ensure
       archive.delete_archive
     end
