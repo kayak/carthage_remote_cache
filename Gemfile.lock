@@ -5,7 +5,7 @@ PATH
       concurrent-ruby (~> 1.0.5)
       rack (~> 2.0.4)
       rest-client (~> 2.0.2)
-      sinatra (~> 2.0.1)
+      sinatra (~> 2.0.2)
 
 GEM
   remote: https://rubygems.org/
@@ -54,7 +54,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     rack (2.0.5)
-    rack-protection (2.0.1)
+    rack-protection (2.0.2)
       rack
     rake (10.5.0)
     rb-fsevent (0.10.2)
@@ -69,10 +69,10 @@ GEM
     ruby_dep (1.5.0)
     rufo (0.2.0)
     shellany (0.0.1)
-    sinatra (2.0.1)
+    sinatra (2.0.2)
       mustermann (~> 1.0)
       rack (~> 2.0)
-      rack-protection (= 2.0.1)
+      rack-protection (= 2.0.2)
       tilt (~> 2.0)
     test-unit (3.2.7)
       power_assert
