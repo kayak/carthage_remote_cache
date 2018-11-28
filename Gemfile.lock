@@ -5,7 +5,7 @@ PATH
       concurrent-ruby (~> 1.0.5)
       rack (~> 2.0.6)
       rest-client (~> 2.0.2)
-      sinatra (~> 2.0.2)
+      sinatra (~> 2.0.4)
 
 GEM
   remote: https://rubygems.org/
