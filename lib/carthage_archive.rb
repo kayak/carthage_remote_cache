@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class CarthageArchive
   attr_reader :archive_filename, :archive_path
 
@@ -46,8 +48,11 @@ class CarthageArchive
     $LOG.debug("Created #{@archive_path} archive, file size: #{formatted_archive_size}")
   end
 
-  def unpack_archive(shell)
+  def unpack_archive(shell, carthage_build_dir = CARTHAGE_BUILD_DIR)
     raise AppError.new, "Archive #{@archive_path} is missing" unless File.exist?(@archive_path)
+
+    delete_existing_build_framework_if_exists(carthage_build_dir)
+
     $LOG.debug("Unpacking #{@archive_path}, file size: #{formatted_archive_size}")
     shell.unpack(@archive_path)
   end
@@ -80,5 +85,14 @@ class CarthageArchive
 
   def formatted_archive_size
     format_file_size(archive_size)
+  end
+
+  def delete_existing_build_framework_if_exists(carthage_build_dir)
+    platform_path = File.join(carthage_build_dir, platform_to_carthage_dir_string(@platform))
+    framework_path = File.join(platform_path, "#{@framework_name}.framework")
+    if File.exist?(framework_path)
+      $LOG.debug("Deleting #{framework_path}")
+      FileUtils.rm_rf(framework_path)
+    end
   end
 end
