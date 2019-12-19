@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.16"
+  spec.add_development_dependency "bundler"
   spec.add_development_dependency "guard", "~> 2.14.2"
   spec.add_development_dependency "guard-test", "~> 2.0.8"
   spec.add_development_dependency "mocha", "~> 1.3.0"
