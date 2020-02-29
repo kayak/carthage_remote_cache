@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "guard", "~> 2.14.2"
   spec.add_development_dependency "guard-test", "~> 2.0.8"
   spec.add_development_dependency "mocha", "~> 1.3.0"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rerun"
   spec.add_development_dependency "rufo"
   spec.add_development_dependency "test-unit", "~> 3.2.7"
