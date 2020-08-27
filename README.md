@@ -205,6 +205,30 @@ If you want to stop the agent, run:
 
 Check out official documentation on [Launch Agents](https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html) for more info.
 
+#### Docker
+
+To build an image based on the latest released gem, run
+
+    $ docker build -t carthagerc .
+
+Afterwards you can run the image in a container using
+
+    $ docker run -d --publish 9292:9292 --name carthagerc carthagerc:latest
+
+The server will now be available on port 9292 on `localhost`. Note that the command above will cause any data added to `~/.carthagerc_server` to be written into the container layer. While this works, it's generally discouraged due to decreased performance and portability. To avoid this, you can use a volume.
+
+    $ docker run -d --publish 9292:9292 --mount "source=carthagerc,target=/root/.carthagerc_server" --name carthagerc carthagerc:latest
+
+We also recommend adding the `--log-opt` option to limit the size of logs, e.g. `--log-opt max-size=50m`.
+
+To inspect the logs after running, use
+
+    $ docker logs carthagerc
+
+To stop the container, run
+
+    $ docker container stop carthagerc
+
 ### Version
 
     $ carthagerc version
