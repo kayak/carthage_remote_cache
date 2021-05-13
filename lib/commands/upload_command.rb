@@ -1,4 +1,4 @@
-require 'concurrent'
+require "concurrent"
 
 class UploadCommand
   def self.new_with_defaults(options)

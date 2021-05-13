@@ -23,7 +23,7 @@ class API
       rescue VersionFileDoesNotExistError => e
         errors << OutdatedFrameworkBuildError.new(
           carthage_dependency.guessed_framework_basename,
-          '-',
+          "-",
           carthage_dependency.version
         )
       rescue OutdatedFrameworkBuildError => e

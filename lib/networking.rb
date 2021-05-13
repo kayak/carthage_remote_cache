@@ -1,5 +1,5 @@
-require 'rest-client'
-require 'uri'
+require "rest-client"
+require "uri"
 
 class Networking
   def initialize(config)
@@ -59,7 +59,7 @@ class Networking
       if response.code == 200
         archive = CarthageArchive.new(framework_name, platform)
         File.write(archive.archive_path, response.to_s)
-        {:archive => archive, :checksum => response.headers[ARCHIVE_CHECKSUM_HEADER_REST_CLIENT]}
+        { :archive => archive, :checksum => response.headers[ARCHIVE_CHECKSUM_HEADER_REST_CLIENT] }
       else
         nil
       end
@@ -70,8 +70,8 @@ class Networking
   # @raise AppError when upload fails
   def upload_framework_archive(zipfile_name, carthage_dependency, framework_name, platform, checksum)
     url = new_framework_url(carthage_dependency, framework_name, platform)
-    params = {:framework_file => File.new(zipfile_name)}
-    headers = {ARCHIVE_CHECKSUM_HEADER_REST_CLIENT => checksum}
+    params = { :framework_file => File.new(zipfile_name) }
+    headers = { ARCHIVE_CHECKSUM_HEADER_REST_CLIENT => checksum }
     $LOG.debug("Uploading framework to #{url}, headers: #{headers}")
     RestClient.post(url, params, headers) do |response, request, result|
       unless response.code == 200
@@ -83,12 +83,12 @@ class Networking
   private
 
   def new_version_url
-    new_server_url(['version'])
+    new_server_url(["version"])
   end
 
   def new_version_file_url(carthage_dependency)
     new_server_url([
-      'versions',
+      "versions",
       @config.xcodebuild_version,
       @config.swift_version,
       carthage_dependency.guessed_framework_basename,
@@ -99,7 +99,7 @@ class Networking
 
   def new_framework_url(carthage_dependency, framework_name, platform)
     new_server_url([
-      'frameworks',
+      "frameworks",
       @config.xcodebuild_version,
       @config.swift_version,
       carthage_dependency.guessed_framework_basename,
@@ -115,13 +115,13 @@ class Networking
       :scheme => @config.server_uri.scheme,
       :host => @config.server_uri.host,
       :port => @config.server_uri.port,
-      :path => '/' + sanitized_path_slices.join('/'),
+      :path => "/" + sanitized_path_slices.join("/"),
     )
     uri.to_s
   end
 
   # Mangle identifiers for URL paths.
   def sanitized(input)
-    input.gsub(/\//, '_')
+    input.gsub(/\//, "_")
   end
 end

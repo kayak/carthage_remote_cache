@@ -3,6 +3,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 pushd "$DIR/../lib/server"
 
-rerun --no-notify rackup
+bundle exec rerun --no-notify rackup
 
 popd

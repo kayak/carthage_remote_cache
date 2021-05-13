@@ -1,8 +1,8 @@
-require 'test/unit'
-require 'carthage_remote_cache'
-require 'fixtures'
-require 'tempfile'
-require 'mocha/test_unit'
+require "test/unit"
+require "carthage_remote_cache"
+require "fixtures"
+require "tempfile"
+require "mocha/test_unit"
 
 class APITests < Test::Unit::TestCase
   def setup
@@ -23,7 +23,7 @@ class APITests < Test::Unit::TestCase
   end
 
   def test_server_returns_different_version
-    @networking.expects(:get_server_version).returns('0.0.1')
+    @networking.expects(:get_server_version).returns("0.0.1")
     assert_raises ServerVersionMismatchError do
       @api.verify_server_version
     end
@@ -37,7 +37,7 @@ class APITests < Test::Unit::TestCase
   end
 
   def test_version_file_matches_server
-    carthage_dependency = CarthageDependency.new(:origin => :github, :source => 'hello/baddie', :version => '2.1.6')
+    carthage_dependency = CarthageDependency.new(:origin => :github, :source => "hello/baddie", :version => "2.1.6")
     version_file = Fixtures.baddie_version_file
 
     with_temporary_server_version_from_path(version_file.path) do |server_version_file|
@@ -47,7 +47,7 @@ class APITests < Test::Unit::TestCase
   end
 
   def test_version_file_doesnt_match_server
-    carthage_dependency = CarthageDependency.new(:origin => :github, :source => 'hello/baddie', :version => '2.1.6')
+    carthage_dependency = CarthageDependency.new(:origin => :github, :source => "hello/baddie", :version => "2.1.6")
     version_file = Fixtures.baddie_version_file
 
     with_temporary_server_version_from_path(Fixtures.framework1_version_path) do |server_version_file|
@@ -59,7 +59,7 @@ class APITests < Test::Unit::TestCase
   private
 
   def with_temporary_server_version_from_path(path)
-    file = Tempfile.new('.tmpfile.version')
+    file = Tempfile.new(".tmpfile.version")
     file.write(File.read(path))
     file.close
 

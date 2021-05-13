@@ -1,4 +1,4 @@
-require 'uri'
+require "uri"
 
 class Configuration
   class UserConfig

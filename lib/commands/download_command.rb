@@ -1,4 +1,4 @@
-require 'concurrent'
+require "concurrent"
 
 class DownloadCommand
   def self.new_with_defaults(options)
@@ -57,8 +57,7 @@ class DownloadCommand
   private
 
   def download(carthage_dependency)
-    local_version_file =
-      if File.exist?(carthage_dependency.version_filepath)
+    local_version_file = if File.exist?(carthage_dependency.version_filepath)
         carthage_dependency.new_version_file
       else
         nil

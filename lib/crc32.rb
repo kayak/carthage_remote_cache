@@ -1,5 +1,5 @@
-require 'digest'
-require 'zlib'
+require "digest"
+require "zlib"
 
 class Digest::CRC32 < Digest::Class
   include Digest::Instance
@@ -17,6 +17,6 @@ class Digest::CRC32 < Digest::Class
   end
 
   def finish
-    [@crc32].pack('N')
+    [@crc32].pack("N")
   end
 end

@@ -1,6 +1,6 @@
-require 'test/unit'
-require 'carthage_remote_cache'
-require 'fixtures'
+require "test/unit"
+require "carthage_remote_cache"
+require "fixtures"
 
 class VersionFileTests < Test::Unit::TestCase
 
@@ -16,12 +16,12 @@ class VersionFileTests < Test::Unit::TestCase
 
   def test_version_lumberjack
     version_file = Fixtures.lumberjack_version_file
-    assert_equal('3.2.1', version_file.version)
+    assert_equal("3.2.1", version_file.version)
   end
 
   def test_version_baddie
     version_file = Fixtures.baddie_version_file
-    assert_equal('2.1.6', version_file.version)
+    assert_equal("2.1.6", version_file.version)
   end
 
   # frameworks_by_platform
@@ -29,17 +29,17 @@ class VersionFileTests < Test::Unit::TestCase
   def test_frameworks_by_platform_lumberjack
     version_file = Fixtures.lumberjack_version_file
     assert_equal(version_file.frameworks_by_platform, {
-      :iOS => ['LumberjackSwift', 'Lumberjack'],
-      :macOS => ['LumberjackSwift', 'Lumberjack'],
-      :tvOS => ['LumberjackSwift', 'Lumberjack'],
-      :watchOS => ['LumberjackSwift', 'Lumberjack'],
+      :iOS => ["LumberjackSwift", "Lumberjack"],
+      :macOS => ["LumberjackSwift", "Lumberjack"],
+      :tvOS => ["LumberjackSwift", "Lumberjack"],
+      :watchOS => ["LumberjackSwift", "Lumberjack"],
     })
   end
 
   def test_frameworks_by_platform_baddie
     version_file = Fixtures.baddie_version_file
     assert_equal(version_file.frameworks_by_platform, {
-      :iOS => ['Baddie'],
+      :iOS => ["Baddie"],
       :macOS => [],
       :tvOS => [],
       :watchOS => [],
@@ -51,26 +51,26 @@ class VersionFileTests < Test::Unit::TestCase
   def test_platforms_by_framework_lumberjack
     version_file = Fixtures.lumberjack_version_file
     assert_equal(version_file.platforms_by_framework, {
-      'Lumberjack' => [:iOS, :macOS, :tvOS, :watchOS],
-      'LumberjackSwift' => [:iOS, :macOS, :tvOS, :watchOS],
+      "Lumberjack" => [:iOS, :macOS, :tvOS, :watchOS],
+      "LumberjackSwift" => [:iOS, :macOS, :tvOS, :watchOS],
     })
   end
 
   def test_platforms_by_framework_baddie
     version_file = Fixtures.baddie_version_file
-    assert_equal(version_file.platforms_by_framework, {'Baddie' => [:iOS]})
+    assert_equal(version_file.platforms_by_framework, { "Baddie" => [:iOS] })
   end
 
   # framework_names
 
   def test_framework_names_lumberjack
     version_file = Fixtures.lumberjack_version_file
-    assert_equal(['Lumberjack', 'LumberjackSwift'], version_file.framework_names)
+    assert_equal(["Lumberjack", "LumberjackSwift"], version_file.framework_names)
   end
 
   def test_framework_names_baddie
     version_file = Fixtures.baddie_version_file
-    assert_equal(['Baddie'], version_file.framework_names)
+    assert_equal(["Baddie"], version_file.framework_names)
   end
 
   # number_of_frameworks

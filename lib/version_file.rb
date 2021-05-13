@@ -1,5 +1,5 @@
-require 'json'
-require 'fileutils'
+require "json"
+require "fileutils"
 
 # .version file representation, see Carthage documentation on them:
 # https://github.com/Carthage/Carthage/blob/master/Documentation/VersionFile.md
@@ -67,20 +67,20 @@ class VersionFile
     file = File.read(@path)
     json = JSON.parse(file)
 
-    @version = json['commitish']
+    @version = json["commitish"]
     raise AppError.new, "Version is missing in #{@path}" if @version.nil? || @version.empty?
 
     @frameworks_by_platform = {
-      :iOS => parse_platform_array(json['iOS']),
-      :macOS => parse_platform_array(json['Mac']),
-      :tvOS => parse_platform_array(json['tvOS']),
-      :watchOS => parse_platform_array(json['watchOS']),
+      :iOS => parse_platform_array(json["iOS"]),
+      :macOS => parse_platform_array(json["Mac"]),
+      :tvOS => parse_platform_array(json["tvOS"]),
+      :watchOS => parse_platform_array(json["watchOS"]),
     }
   end
 
   def parse_platform_array(array)
     if array.kind_of?(Array)
-      array.map { |entry| entry['name'] }
+      array.map { |entry| entry["name"] }
     else
       []
     end

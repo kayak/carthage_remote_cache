@@ -4,8 +4,8 @@ class ServerCommand
   end
 
   def run
-    ENV['RACK_ENV'] = 'production'
-    require 'server/server_app'
+    ENV["RACK_ENV"] = "production"
+    require "server/server_app"
     Rack::Handler::WEBrick.run(
       Sinatra::Application,
       :Port => @options[:server_port],

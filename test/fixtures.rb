@@ -1,6 +1,6 @@
 FIXTURES_DIR = File.expand_path("../fixtures", __FILE__)
-FIXTURES_BUILD_DIR = File.join(FIXTURES_DIR, 'Build')
-FIXTURES_BUILD_IOS_DIR = File.join(FIXTURES_BUILD_DIR, 'iOS')
+FIXTURES_BUILD_DIR = File.join(FIXTURES_DIR, "Build")
+FIXTURES_BUILD_IOS_DIR = File.join(FIXTURES_BUILD_DIR, "iOS")
 
 class Fixtures
   class << self
@@ -12,7 +12,7 @@ class Fixtures
     end
 
     def nonexistent_version_file_path
-      File.join(FIXTURES_BUILD_DIR, '.nonexistent.version')
+      File.join(FIXTURES_BUILD_DIR, ".nonexistent.version")
     end
 
     # @!group lumberjack
@@ -22,7 +22,7 @@ class Fixtures
     end
 
     def lumberjack_version_path
-      File.join(FIXTURES_BUILD_DIR, '.lumberjack.version')
+      File.join(FIXTURES_BUILD_DIR, ".lumberjack.version")
     end
 
     # @!group baddie
@@ -32,41 +32,41 @@ class Fixtures
     end
 
     def baddie_version_path
-      File.join(FIXTURES_BUILD_DIR, '.baddie.version')
+      File.join(FIXTURES_BUILD_DIR, ".baddie.version")
     end
 
     # @!group Framework1
 
     def framework1_version_path
-      File.join(FIXTURES_BUILD_DIR, '.Framework1.version')
+      File.join(FIXTURES_BUILD_DIR, ".Framework1.version")
     end
 
     def framework1_dir_path
-      File.join(FIXTURES_BUILD_IOS_DIR, 'Framework1.framework')
+      File.join(FIXTURES_BUILD_IOS_DIR, "Framework1.framework")
     end
 
     def framework1_dsym_path
-      File.join(FIXTURES_BUILD_IOS_DIR, 'Framework1.framework.dSYM')
+      File.join(FIXTURES_BUILD_IOS_DIR, "Framework1.framework.dSYM")
     end
 
     def bcsymbolmap_A0F_path
-      File.join(FIXTURES_BUILD_IOS_DIR, bcsymbolmap_A0F_uuid + '.bcsymbolmap')
+      File.join(FIXTURES_BUILD_IOS_DIR, bcsymbolmap_A0F_uuid + ".bcsymbolmap")
     end
 
     def bcsymbolmap_A66_path
-      File.join(FIXTURES_BUILD_IOS_DIR, bcsymbolmap_A66_uuid + '.bcsymbolmap')
+      File.join(FIXTURES_BUILD_IOS_DIR, bcsymbolmap_A66_uuid + ".bcsymbolmap")
     end
 
     def bcsymbolmap_A0F_uuid
-      'A0F30CB0-3A0D-33A7-B149-020251A1E1A4'
+      "A0F30CB0-3A0D-33A7-B149-020251A1E1A4"
     end
 
     def bcsymbolmap_A66_uuid
-      'A663617F-D848-37DF-AB4B-6A35F51E005A'
+      "A663617F-D848-37DF-AB4B-6A35F51E005A"
     end
 
     def bcsymbolmap_invalid_uuid
-      'XXXXXXXX-D848-37DF-AB4B-6A35F51E005A'
+      "XXXXXXXX-D848-37DF-AB4B-6A35F51E005A"
     end
   end
 end

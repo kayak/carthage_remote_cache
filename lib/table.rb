@@ -32,8 +32,8 @@ class Table
   end
 
   def separator_line
-    dashes = @column_sizes.map { |size| '-' * size }
-    '+' + dashes.join('+') + '+'
+    dashes = @column_sizes.map { |size| "-" * size }
+    "+" + dashes.join("+") + "+"
   end
 
   def header_line
@@ -41,7 +41,7 @@ class Table
       column_size = @column_sizes[index] - 1
       " %-#{column_size}.#{column_size}s" % column
     end
-    '|' + columns.join('|') + '|'
+    "|" + columns.join("|") + "|"
   end
 
   def row_line(row)
@@ -53,6 +53,6 @@ class Table
         "%#{column_size}.#{column_size}s " % column
       end
     end
-    '|' + columns.join('|') + '|'
+    "|" + columns.join("|") + "|"
   end
 end

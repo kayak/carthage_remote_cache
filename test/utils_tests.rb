@@ -1,6 +1,6 @@
-require 'test/unit'
-require 'carthage_remote_cache'
-require 'fixtures'
+require "test/unit"
+require "carthage_remote_cache"
+require "fixtures"
 
 class UtilsTests < Test::Unit::TestCase
 
@@ -8,19 +8,19 @@ class UtilsTests < Test::Unit::TestCase
 
   def test_crc32
     checksum = crc32(Fixtures.framework1_version_path)
-    assert_equal('92fa717d', checksum)
+    assert_equal("92fa717d", checksum)
   end
 
   # quote
 
   def test_quote_string
-    assert_equal('', quote(''))
-    assert_equal('"/some/path"', quote('/some/path'))
+    assert_equal("", quote(""))
+    assert_equal('"/some/path"', quote("/some/path"))
   end
 
   def test_quote_array
-    assert_equal('', quote([]))
-    assert_equal('"/some path1" "/some/path2" "/some_path3"', quote(['/some path1', '/some/path2', '/some_path3']))
+    assert_equal("", quote([]))
+    assert_equal('"/some path1" "/some/path2" "/some_path3"', quote(["/some path1", "/some/path2", "/some_path3"]))
   end
 
   def test_quote_unsupported
@@ -32,9 +32,9 @@ class UtilsTests < Test::Unit::TestCase
   # format_file_size
 
   def test_format_file_size
-    assert_equal('0.0 MB', format_file_size(0))
-    assert_equal('0.1 MB', format_file_size(1000 * 100))
-    assert_equal('1.0 MB', format_file_size(1000 * 1000))
-    assert_equal('10.0 MB', format_file_size(1000 * 1000 * 10))
+    assert_equal("0.0 MB", format_file_size(0))
+    assert_equal("0.1 MB", format_file_size(1000 * 100))
+    assert_equal("1.0 MB", format_file_size(1000 * 1000))
+    assert_equal("10.0 MB", format_file_size(1000 * 1000 * 10))
   end
 end

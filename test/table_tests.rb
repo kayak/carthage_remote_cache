@@ -1,5 +1,5 @@
-require 'test/unit'
-require 'carthage_remote_cache'
+require "test/unit"
+require "carthage_remote_cache"
 
 class TableTests < Test::Unit::TestCase
   def test_table_empty_rows

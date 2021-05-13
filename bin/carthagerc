@@ -2,11 +2,11 @@
 
 $LOAD_PATH.push File.expand_path("../../lib", __FILE__)
 
-require 'optparse'
-require 'carthage_remote_cache'
-require 'commands'
+require "optparse"
+require "carthage_remote_cache"
+require "commands"
 
-ARGV << '-h' if ARGV.empty?
+ARGV << "-h" if ARGV.empty?
 options = {
   :force => false,
   :server_port => SERVER_DEFAULT_PORT,

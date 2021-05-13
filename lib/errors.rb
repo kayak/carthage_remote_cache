@@ -51,7 +51,7 @@ class FrameworkValidationError < AppError
   end
 
   def to_s
-    header = ['Framework', CARTHAGE_BUILD_DIR, CARTFILE_RESOLVED]
+    header = ["Framework", CARTHAGE_BUILD_DIR, CARTFILE_RESOLVED]
     rows = @errors.map { |e| [e.framework_name, e.build_version, e.cartfile_resolved_version] }
     table = Table.new(header, rows)
     <<~EOS

@@ -15,7 +15,7 @@ end
 def quote(input)
   if input.is_a? String
     if input.empty?
-      ''
+      ""
     else
       '"' + input + '"'
     end
@@ -23,7 +23,7 @@ def quote(input)
     input
       .map { |e| quote(e) }
       .select { |e| !e.empty? }
-      .join(' ')
+      .join(" ")
   else
     raise AppError.new, "Unsupported type #{input}"
   end
@@ -32,13 +32,13 @@ end
 def platform_to_api_string(platform)
   case platform
   when :iOS
-    'iOS'
+    "iOS"
   when :macOS
-    'macOS'
+    "macOS"
   when :tvOS
-    'tvOS'
+    "tvOS"
   when :watchOS
-    'watchOS'
+    "watchOS"
   else
     raise AppError.new, "Unrecognized platform #{platform.inspect}"
   end
@@ -47,13 +47,13 @@ end
 def platform_to_carthage_dir_string(platform)
   case platform
   when :iOS
-    'iOS'
+    "iOS"
   when :macOS
-    'Mac'
+    "Mac"
   when :tvOS
-    'tvOS'
+    "tvOS"
   when :watchOS
-    'watchOS'
+    "watchOS"
   else
     raise AppError.new, "Unrecognized platform #{platform.inspect}"
   end

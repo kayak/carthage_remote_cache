@@ -1,14 +1,14 @@
-require 'sinatra'
-require 'fileutils'
-require 'carthage_remote_cache'
+require "sinatra"
+require "fileutils"
+require "carthage_remote_cache"
 
-get '/' do
+get "/" do
   "Welcome to carthage_remote_cache"
 end
 
-version_path = '/version'
-versions_path = '/versions/:xcodebuild_version/:swift_version/:dependency_name/:version/:version_filename'
-frameworks_path = '/frameworks/:xcodebuild_version/:swift_version/:dependency_name/:version/:framework_name/:platform'
+version_path = "/version"
+versions_path = "/versions/:xcodebuild_version/:swift_version/:dependency_name/:version/:version_filename"
+frameworks_path = "/frameworks/:xcodebuild_version/:swift_version/:dependency_name/:version/:framework_name/:platform"
 
 get version_path do
   status(200)
@@ -39,7 +39,7 @@ post versions_path do
   File.delete(target_filename) if File.exist?(target_filename)
 
   $LOG.info("Writing: #{target_filename}")
-  File.open(target_filename, 'wb') do |target_file|
+  File.open(target_filename, "wb") do |target_file|
     target_file.write(source_file.read)
   end
 
@@ -75,7 +75,7 @@ post frameworks_path do
   File.delete(target_filename) if File.exist?(target_filename)
 
   $LOG.info("Writing: #{target_filename}")
-  File.open(target_filename, 'wb') do |target_file|
+  File.open(target_filename, "wb") do |target_file|
     target_file.write(source_file.read)
   end
 

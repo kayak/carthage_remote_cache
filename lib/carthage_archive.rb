@@ -1,4 +1,4 @@
-require 'fileutils'
+require "fileutils"
 
 class CarthageArchive
   attr_reader :archive_filename, :archive_path
