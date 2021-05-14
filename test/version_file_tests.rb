@@ -12,6 +12,22 @@ class VersionFileTests < Test::Unit::TestCase
     end
   end
 
+  def test_init_lumberjack
+    version_file = Fixtures.lumberjack_version_file
+    assert_equal(2, version_file.json["iOS"].count)
+    assert_equal(2, version_file.json["Mac"].count)
+    assert_equal(2, version_file.json["tvOS"].count)
+    assert_equal(2, version_file.json["watchOS"].count)
+  end
+
+  def test_init_lumberjack_filtered_platforms
+    version_file = Fixtures.lumberjack_version_file([:iOS])
+    assert_equal(2, version_file.json["iOS"].count)
+    assert_equal(0, version_file.json["Mac"].count)
+    assert_equal(0, version_file.json["tvOS"].count)
+    assert_equal(0, version_file.json["watchOS"].count)
+  end
+
   # version
 
   def test_version_lumberjack
@@ -36,6 +52,16 @@ class VersionFileTests < Test::Unit::TestCase
     })
   end
 
+  def test_frameworks_by_platform_lumberjack_filtered_platforms
+    version_file = Fixtures.lumberjack_version_file([:iOS])
+    assert_equal(version_file.frameworks_by_platform, {
+      :iOS => ["LumberjackSwift", "Lumberjack"],
+      :macOS => [],
+      :tvOS => [],
+      :watchOS => [],
+    })
+  end
+
   def test_frameworks_by_platform_baddie
     version_file = Fixtures.baddie_version_file
     assert_equal(version_file.frameworks_by_platform, {
@@ -53,6 +79,14 @@ class VersionFileTests < Test::Unit::TestCase
     assert_equal(version_file.platforms_by_framework, {
       "Lumberjack" => [:iOS, :macOS, :tvOS, :watchOS],
       "LumberjackSwift" => [:iOS, :macOS, :tvOS, :watchOS],
+    })
+  end
+
+  def test_platforms_by_framework_lumberjack_filtered_platforms
+    version_file = Fixtures.lumberjack_version_file([:iOS])
+    assert_equal(version_file.platforms_by_framework, {
+      "Lumberjack" => [:iOS],
+      "LumberjackSwift" => [:iOS],
     })
   end
 
@@ -100,6 +134,19 @@ class VersionFileTests < Test::Unit::TestCase
   def test_same_content_with_different_file
     version_file1 = Fixtures.lumberjack_version_file
     version_file2 = Fixtures.baddie_version_file
+    assert_false(version_file1.same_content?(version_file2))
+  end
+
+  def test_same_content_with_same_file_and_platforms
+    for platform in PLATFORMS
+      version_file = Fixtures.lumberjack_version_file([platform])
+      assert_true(version_file.same_content?(version_file))
+    end
+  end
+
+  def test_same_content_with_same_file_and_different_platforms
+    version_file1 = Fixtures.lumberjack_version_file([:iOS])
+    version_file2 = Fixtures.lumberjack_version_file([:watchOS])
     assert_false(version_file1.same_content?(version_file2))
   end
 end

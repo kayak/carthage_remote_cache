@@ -24,10 +24,15 @@ class Networking
   # Version Files
 
   # @return VersionFile or nil
-  def download_version_file(carthage_dependency)
+  def download_version_file(carthage_dependency, platforms)
     url = new_version_file_url(carthage_dependency)
-    $LOG.debug("Downloading version file from #{url}")
-    version_file = RestClient.get(url) do |response, request, result|
+    params = {}
+    unless platforms.nil?
+      params[:platform] = platforms.map(&:to_s).join(",")
+    end
+
+    $LOG.debug("Downloading version file from #{url}, params: #{params}")
+    version_file = RestClient.get(url, { params: params }) do |response, request, result|
       if response.code == 200
         File.write(carthage_dependency.version_filename, response.to_s)
         VersionFile.new(carthage_dependency.version_filename)

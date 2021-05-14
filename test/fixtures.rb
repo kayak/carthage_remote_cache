@@ -17,8 +17,8 @@ class Fixtures
 
     # @!group lumberjack
 
-    def lumberjack_version_file
-      VersionFile.new(lumberjack_version_path)
+    def lumberjack_version_file(platforms = PLATFORMS)
+      VersionFile.new(lumberjack_version_path, platforms)
     end
 
     def lumberjack_version_path

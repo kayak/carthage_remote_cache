@@ -35,11 +35,11 @@ class API
     end
   end
 
-  def version_file_matches_server?(carthage_dependency, version_file)
+  def version_file_matches_server?(carthage_dependency, version_file, platforms)
     if @options[:force]
       false
     else
-      server_version_file = @networking.download_version_file(carthage_dependency)
+      server_version_file = @networking.download_version_file(carthage_dependency, platforms)
       result = version_file.same_content?(server_version_file)
       server_version_file.remove unless server_version_file.nil?
       result
