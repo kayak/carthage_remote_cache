@@ -4,10 +4,11 @@ require "fileutils"
 # .version file representation, see Carthage documentation on them:
 # https://github.com/Carthage/Carthage/blob/master/Documentation/VersionFile.md
 class VersionFile
-  attr_reader :path, :version, :frameworks_by_platform
+  attr_reader :path, :platforms, :json, :version, :frameworks_by_platform
 
-  def initialize(path)
+  def initialize(path, platforms = PLATFORMS)
     @path = path
+    @platforms = platforms
     parse
   end
 
@@ -55,7 +56,7 @@ class VersionFile
     if other_version_file.nil?
       false
     else
-      FileUtils.compare_file(@path, other_version_file.path)
+      @json == other_version_file.json
     end
   end
 
@@ -64,21 +65,34 @@ class VersionFile
   def parse
     raise VersionFileDoesNotExistError.new, "File #{path} doesn't exist, has carthage been bootstrapped?" unless File.exist?(@path)
 
-    file = File.read(@path)
-    json = JSON.parse(file)
+    @json = read_json
 
-    @version = json["commitish"]
-    raise AppError.new, "Version is missing in #{@path}" if @version.nil? || @version.empty?
+    @version = @json["commitish"]
+    raise AppError.new, "Version is missing in #{@path}:\n\n#{@json}" if @version.nil? || @version.empty?
 
-    @frameworks_by_platform = {
-      :iOS => parse_platform_array(json["iOS"]),
-      :macOS => parse_platform_array(json["Mac"]),
-      :tvOS => parse_platform_array(json["tvOS"]),
-      :watchOS => parse_platform_array(json["watchOS"]),
-    }
+    @frameworks_by_platform = PLATFORMS.to_h { |platform| [platform, parse_platform(platform)] }
   end
 
-  def parse_platform_array(array)
+  # Reads json from `@path` and cleans up entries, tha are not defined in `@platforms`.
+  def read_json
+    file = File.read(@path)
+    json = JSON.parse(file)
+    stripped_json = strip_platforms(json)
+    stripped_json
+  end
+
+  def strip_platforms(json)
+    for platform in PLATFORMS
+      if !@platforms.include?(platform)
+        json[platform_to_carthage_dir_string(platform)] = []
+      end
+    end
+    json
+  end
+
+  def parse_platform(platform)
+    carthage_platform_name = platform_to_carthage_dir_string(platform)
+    array = @json[carthage_platform_name]
     if array.kind_of?(Array)
       array.map { |entry| entry["name"] }
     else

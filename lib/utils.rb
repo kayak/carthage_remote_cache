@@ -59,6 +59,16 @@ def platform_to_carthage_dir_string(platform)
   end
 end
 
+def platform_to_symbols(string)
+  platforms = string.split(",").map(&:to_sym)
+  for platform in platforms
+    if !PLATFORMS.include?(platform)
+      raise PlatformMismatchError.new(platform)
+    end
+  end
+  platforms
+end
+
 # @return string in "x.y MB" format
 def format_file_size(bytes)
   megabytes = bytes / 1000.0 / 1000.0

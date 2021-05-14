@@ -1,3 +1,4 @@
+require "json"
 require "sinatra"
 require "fileutils"
 require "carthage_remote_cache"
@@ -16,13 +17,25 @@ get version_path do
 end
 
 get versions_path do
+  if params.key?(:platform)
+    begin
+      platforms = platform_to_symbols(params[:platform])
+    rescue AppError => e
+      status(400)
+      return JSON.pretty_generate({ "error" => e.message })
+    end
+  else
+    platforms = PLATFORMS
+  end
+
   dirname = params_to_framework_dir(params)
   filename = params[:version_filename]
   filepath = File.join(dirname, filename)
 
   if File.exist?(filepath)
     status(200)
-    send_file(filepath)
+    version_file = VersionFile.new(filepath, platforms)
+    JSON.pretty_generate(version_file.json)
   else
     status(404)
   end

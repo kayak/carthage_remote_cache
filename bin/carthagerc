@@ -7,6 +7,7 @@ require "carthage_remote_cache"
 require "commands"
 
 ARGV << "-h" if ARGV.empty?
+command = ARGV[0]
 options = {
   :force => false,
   :server_port => SERVER_DEFAULT_PORT,
@@ -30,7 +31,7 @@ opt_parser = OptionParser.new do |opt|
   opt.separator "    config"
   opt.separator "        print environment information and #{CARTRCFILE} configuration"
   opt.separator ""
-  opt.separator "    download [-f|--force] [-v|--verbose]"
+  opt.separator "    download [-f|--force] [-v|--verbose] [-mPLATFORM|--platform=PLATFORM]"
   opt.separator "        fetch missing frameworks into Carthage/Build"
   opt.separator ""
   opt.separator "    init"
@@ -59,6 +60,11 @@ opt_parser = OptionParser.new do |opt|
     exit
   end
 
+  opt.on("-m", "--platform=PLATFORM", "Comma delimited list of platforms which should be downloaded from the server; e.g. `--platform iOS,macOS`; Supported values: #{PLATFORMS.map(&:to_s).join(", ")}") do |platform|
+    raise AppError.new("[-p|--platform] is only supported for the 'download' command") if command != "download"
+    options[:platforms] = platform_to_symbols(platform)
+  end
+
   opt.on("-pPORT", "--port=PORT", "Server application port used when starting server, default port is #{SERVER_DEFAULT_PORT}") do |port|
     options[:server_port] = port
   end
@@ -68,10 +74,9 @@ opt_parser = OptionParser.new do |opt|
   end
 end
 
-opt_parser.parse!
-
 begin
-  command = ARGV[0]
+  opt_parser.parse!
+
   case command
   when "config"
     puts Configuration.new_with_defaults

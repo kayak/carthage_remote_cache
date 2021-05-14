@@ -11,6 +11,7 @@ class DownloadCommand
       config: config,
       networking: networking,
       api: api,
+      platforms: options[:platforms],
     )
   end
 
@@ -18,6 +19,7 @@ class DownloadCommand
     @config = args[:config]
     @networking = args[:networking]
     @api = args[:api]
+    @platforms = args[:platforms]
   end
 
   def run
@@ -63,7 +65,7 @@ class DownloadCommand
         nil
       end
 
-    if !local_version_file.nil? && @api.version_file_matches_server?(carthage_dependency, local_version_file)
+    if !local_version_file.nil? && @api.version_file_matches_server?(carthage_dependency, local_version_file, @platforms)
       $LOG.debug("Version file #{local_version_file.path} matches server version, skipping download")
       @mutex.synchronize do
         @number_of_skipped_archives += local_version_file.number_of_frameworks
@@ -71,7 +73,7 @@ class DownloadCommand
       return
     end
 
-    version_file = @networking.download_version_file(carthage_dependency)
+    version_file = @networking.download_version_file(carthage_dependency, @platforms)
     raise AppError.new, "Version file #{carthage_dependency.version_filename} is not present on the server, please run `carthagerc upload` first" if version_file.nil?
 
     version_file.frameworks_by_platform.each do |platform, framework_names|

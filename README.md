@@ -68,22 +68,29 @@ It is recommended to always perform the upload workflow after upgrading Xcode an
 
 ### Download Workflow
 
-Once cache server has been populated with framework binaries, it's time to fetch frameworks from a different machine. Make sure to pull in `Cartrcfile` from respository before executing:
+Once the cache server has been populated with framework binaries, it's time to fetch frameworks from a different machine. Make sure to pull in `Cartrcfile` from the repository before executing:
 
     $ carthagerc download
 
-You should expect to see following output on a machine with empty `Carthage` folder:
+You should expect to see the following output on a machine with empty `Carthage` folder:
 
     Downloaded and extracted 53 archives (97.2 MB), skipped 0 archives.
 
 Your project should be ready for building.
 
-#### Overwriting Local Carthage Folder
+#### Overwrite Local Carthage Folder
 
 In case you happen to change a file in `Carthage/Build` by accident, it's possible to force download all frameworks again with:
 
     $ carthagerc download --force
 
+#### Download Only Some Platforms
+
+The example above downloaded all frameworks for all platforms (iOS, macOS, tvOS, watchOS). If large dependencies or network speed are an issue, you can download only a subset of the platforms by using the `--platform` argument:
+
+    $ carthagerc download --platform iOS,macOS,tvOS,watchOS
+
+Please note, that invoking the `download` command multiple times with different platform arguments is not supported. The `.version` file will "forget" that `carthagerc` already downloaded the platform specified before the last download. If you need multiple platforms, specify them in a single `download` command once, delimited with a comma.
 
 ### Config
 
@@ -245,7 +252,7 @@ Documentation is also available when running `carthagerc` or `carthagerc --help`
         config
             print environment information and Cartrcfile configuration
 
-        download [-f|--force] [-v|--verbose]
+        download [-f|--force] [-v|--verbose] [-mPLATFORM|--platform=PLATFORM]
             fetch missing frameworks into Carthage/Build
 
         init
@@ -266,6 +273,7 @@ Documentation is also available when running `carthagerc` or `carthagerc --help`
     OPTIONS
         -f, --force                      Force upload/download of framework archives even if local and server .version files match
         -h, --help                       Show help
+        -m, --platform=PLATFORM          Comma delimited list of platforms which should be downloaded from the server; e.g. `--platform iOS,macOS`; Supported values: iOS, macOS, tvOS, watchOS
         -p, --port=PORT                  Server application port used when starting server, default port is 9292
         -v, --verbose                    Show extra runtime information
 

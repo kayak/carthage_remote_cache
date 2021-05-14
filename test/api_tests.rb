@@ -33,7 +33,7 @@ class APITests < Test::Unit::TestCase
 
   def test_version_file_never_matches_server_when_forced
     @options[:force] = true
-    assert_false(@api.version_file_matches_server?(nil, nil))
+    assert_false(@api.version_file_matches_server?(nil, nil, nil))
   end
 
   def test_version_file_matches_server
@@ -41,8 +41,18 @@ class APITests < Test::Unit::TestCase
     version_file = Fixtures.baddie_version_file
 
     with_temporary_server_version_from_path(version_file.path) do |server_version_file|
-      @networking.expects(:download_version_file).with(carthage_dependency).returns(server_version_file)
-      assert_true(@api.version_file_matches_server?(carthage_dependency, version_file))
+      @networking.expects(:download_version_file).with(carthage_dependency, nil).returns(server_version_file)
+      assert_true(@api.version_file_matches_server?(carthage_dependency, version_file, nil))
+    end
+  end
+
+  def test_version_with_platformsfile_matches_server
+    carthage_dependency = CarthageDependency.new(:origin => :github, :source => "hello/baddie", :version => "2.1.6")
+    version_file = Fixtures.baddie_version_file
+
+    with_temporary_server_version_from_path(version_file.path) do |server_version_file|
+      @networking.expects(:download_version_file).with(carthage_dependency, [:iOS]).returns(server_version_file)
+      assert_true(@api.version_file_matches_server?(carthage_dependency, version_file, [:iOS]))
     end
   end
 
@@ -51,8 +61,8 @@ class APITests < Test::Unit::TestCase
     version_file = Fixtures.baddie_version_file
 
     with_temporary_server_version_from_path(Fixtures.framework1_version_path) do |server_version_file|
-      @networking.expects(:download_version_file).with(carthage_dependency).returns(server_version_file)
-      assert_false(@api.version_file_matches_server?(carthage_dependency, version_file))
+      @networking.expects(:download_version_file).with(carthage_dependency, nil).returns(server_version_file)
+      assert_false(@api.version_file_matches_server?(carthage_dependency, version_file, nil))
     end
   end
 

@@ -69,3 +69,14 @@ end
 class MissingFrameworkDirectoryError < AppError; end
 
 class ServerVersionMismatchError < AppError; end
+
+class PlatformMismatchError < AppError
+  def initialize(platform)
+    @platform = platform
+  end
+
+  def to_s
+    platforms = PLATFORMS.map(&:to_s).join(", ")
+    "Platform '#{@platform}' doesn't match any of: #{platforms}"
+  end
+end
