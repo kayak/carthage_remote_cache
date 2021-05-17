@@ -2,8 +2,9 @@ require "rest-client"
 require "uri"
 
 class Networking
-  def initialize(config)
+  def initialize(config, is_retry_enabled)
     @config = config
+    @is_retry_enabled = is_retry_enabled
   end
 
   # Version
@@ -11,7 +12,7 @@ class Networking
   def get_server_version
     url = new_version_url
     $LOG.debug("Fetching server version from #{url}")
-    server_version = with_retry do
+    server_version = perform_network_request do
       RestClient.get(url) do |response, request, result|
         if response.code == 200
           response.strip
@@ -33,7 +34,7 @@ class Networking
       params[:platform] = platforms.map(&:to_s).join(",")
     end
 
-    version_file = with_retry do
+    version_file = perform_network_request do
       $LOG.debug("Downloading version file from #{url}, params: #{params}")
       RestClient.get(url, { params: params }) do |response, request, result|
         if response.code == 200
@@ -50,7 +51,7 @@ class Networking
   # @raise AppError on upload failure
   def upload_version_file(carthage_dependency)
     url = new_version_file_url(carthage_dependency)
-    with_retry do
+    perform_network_request do
       $LOG.debug("Uploading #{carthage_dependency.version_filename}")
       RestClient.post(url, :version_file => File.new(carthage_dependency.version_filepath)) do |response, request, result|
         unless response.code == 200
@@ -65,7 +66,7 @@ class Networking
   # @return Hash with CarthageArchive and checksum or nil
   def download_framework_archive(carthage_dependency, framework_name, platform)
     url = new_framework_url(carthage_dependency, framework_name, platform)
-    archive = with_retry do
+    archive = perform_network_request do
       $LOG.debug("Downloading framework from #{url}")
       RestClient.get(url) do |response, request, result|
         if response.code == 200
@@ -85,7 +86,7 @@ class Networking
     url = new_framework_url(carthage_dependency, framework_name, platform)
     params = { :framework_file => File.new(zipfile_name) }
     headers = { ARCHIVE_CHECKSUM_HEADER_REST_CLIENT => checksum }
-    with_retry do
+    perform_network_request do
       $LOG.debug("Uploading framework to #{url}, headers: #{headers}")
       RestClient.post(url, params, headers) do |response, request, result|
         unless response.code == 200
@@ -140,23 +141,27 @@ class Networking
     input.gsub(/\//, "_")
   end
 
-  def with_retry
-    retries_remaining = 3
-    sleep_time_seconds = 5
-    begin
-      result = yield
-    rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError,
-           Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
-      if retries_remaining > 0
-        $LOG.warn("Network request failed - remaining retries: #{retries_remaining}, sleeping for: #{sleep_time_seconds}s, error: #{e.message}")
-        sleep(sleep_time_seconds)
-        retries_remaining -= 1
-        sleep_time_seconds *= 3
-        retry
-      else
-        raise e
+  def perform_network_request
+    if @is_retry_enabled
+      retries_remaining = 3
+      sleep_time_seconds = 5
+      begin
+        result = yield
+      rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError,
+            Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+        if retries_remaining > 0
+          $LOG.warn("Network request failed - remaining retries: #{retries_remaining}, sleeping for: #{sleep_time_seconds}s, error: #{e.message}")
+          sleep(sleep_time_seconds)
+          retries_remaining -= 1
+          sleep_time_seconds *= 3
+          retry
+        else
+          raise e
+        end
       end
+      result
+    else
+      yield
     end
-    result
   end
 end

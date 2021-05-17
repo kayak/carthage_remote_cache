@@ -274,6 +274,7 @@ Documentation is also available when running `carthagerc` or `carthagerc --help`
         -f, --force                      Force upload/download of framework archives even if local and server .version files match
         -h, --help                       Show help
         -m, --platform=PLATFORM          Comma delimited list of platforms which should be downloaded from the server; e.g. `--platform iOS,macOS`; Supported values: iOS, macOS, tvOS, watchOS
+        -n, --no-retry                   Don't retry download or upload on network failures
         -p, --port=PORT                  Server application port used when starting server, default port is 9292
         -v, --verbose                    Show extra runtime information
 
