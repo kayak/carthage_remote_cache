@@ -10,6 +10,7 @@ ARGV << "-h" if ARGV.empty?
 command = ARGV[0]
 options = {
   :force => false,
+  :is_retry_enabled => true,
   :server_port => SERVER_DEFAULT_PORT,
   :verbose => false,
 }
@@ -63,6 +64,10 @@ opt_parser = OptionParser.new do |opt|
   opt.on("-m", "--platform=PLATFORM", "Comma delimited list of platforms which should be downloaded from the server; e.g. `--platform iOS,macOS`; Supported values: #{PLATFORMS.map(&:to_s).join(", ")}") do |platform|
     raise AppError.new("[-p|--platform] is only supported for the 'download' command") if command != "download"
     options[:platforms] = platform_to_symbols(platform)
+  end
+
+  opt.on("-n", "--no-retry", "Don't retry download or upload on network failures") do
+    options[:is_retry_enabled] = false
   end
 
   opt.on("-pPORT", "--port=PORT", "Server application port used when starting server, default port is #{SERVER_DEFAULT_PORT}") do |port|

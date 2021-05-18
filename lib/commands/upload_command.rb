@@ -4,7 +4,7 @@ class UploadCommand
   def self.new_with_defaults(options)
     shell = ShellWrapper.new
     config = Configuration.new(shell)
-    networking = Networking.new(config)
+    networking = Networking.new(config, options[:is_retry_enabled])
     api = API.new(shell, config, networking, options)
 
     UploadCommand.new(
