@@ -34,6 +34,7 @@ class UtilsTests < Test::Unit::TestCase
 
   def test_format_file_size
     assert_equal("0.0 MB", format_file_size(0))
+    assert_equal("0.1 MB", format_file_size(1))
     assert_equal("0.1 MB", format_file_size(1000 * 100))
     assert_equal("1.0 MB", format_file_size(1000 * 1000))
     assert_equal("10.0 MB", format_file_size(1000 * 1000 * 10))

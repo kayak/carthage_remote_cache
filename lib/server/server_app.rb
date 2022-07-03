@@ -4,12 +4,18 @@ require "fileutils"
 require "carthage_remote_cache"
 
 get "/" do
-  "Welcome to carthage_remote_cache"
+  <<-eos
+    <html>
+      <p>Welcome to <strong>carthage_remote_cache</strong> (#{VERSION})</p>
+      <p>To browse cache contents visit <a href="/browser/">/browser/</a></p>
+    </html>
+  eos
 end
 
 version_path = "/version"
 versions_path = "/versions/:xcodebuild_version/:swift_version/:dependency_name/:version/:version_filename"
 frameworks_path = "/frameworks/:xcodebuild_version/:swift_version/:dependency_name/:version/:framework_name/:platform"
+browser_path = "/browser/*"
 
 get version_path do
   status(200)
@@ -101,6 +107,44 @@ post frameworks_path do
     $LOG.error(message)
     status(500)
     message
+  end
+end
+
+# Full blown file browser.
+get browser_path do
+  url_path = "/" + params["splat"][0]
+  path = File.join(SERVER_CACHE_DIR, url_path)
+
+  if File.file?(path)
+    status(200)
+    send_file(path)
+  else
+    html = "<html>"
+
+    # Current directory
+    html += "<h2>#{url_path}</h2>"
+
+    # ".." link
+    if url_path != "/"
+      parent = File.dirname(url_path)
+      parent += "/" if parent != "/"
+      html += "<p><a href=\"/browser#{parent}\">..</a></p>"
+    end
+
+    # Child links
+    for name in Dir.children(path).select { |name| name != ".DS_Store" }.sort
+      child_path = File.join(path, name)
+      html += "<p>"
+      if File.file?(child_path)
+        html += "<a href=\"#{name}\">#{name}</a> #{format_file_size(File.size(child_path))}"
+      else
+        html += "<a href=\"#{name}/\">#{name}/</a>"
+      end
+      html += " <span style=\"color:#777\">#{File.ctime(child_path).to_s}</span>"
+      html += "</p>"
+    end
+
+    html
   end
 end
 

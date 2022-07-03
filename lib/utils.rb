@@ -71,6 +71,10 @@ end
 
 # @return string in "x.y MB" format
 def format_file_size(bytes)
-  megabytes = bytes / 1000.0 / 1000.0
-  "#{megabytes.round(1)} MB"
+  if bytes == 0
+    "0.0 MB"
+  else
+    megabytes = [0.1, bytes / 1000.0 / 1000.0].max
+    "#{megabytes.round(1)} MB"
+  end
 end
