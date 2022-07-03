@@ -28,11 +28,19 @@ class VersionFileTests < Test::Unit::TestCase
     assert_equal(0, version_file.json["watchOS"].count)
   end
 
+  def test_init_xcframework
+    version_file = Fixtures.xcframework_version_file
+    assert_equal(3, version_file.json["iOS"].count)
+    assert_equal(0, version_file.json["Mac"].count)
+    assert_equal(0, version_file.json["tvOS"].count)
+    assert_equal(0, version_file.json["watchOS"].count)
+  end
+
   # version
 
   def test_version_lumberjack
     version_file = Fixtures.lumberjack_version_file
-    assert_equal("3.2.1", version_file.version)
+    assert_equal("3.7.4", version_file.version)
   end
 
   def test_version_baddie
@@ -40,32 +48,65 @@ class VersionFileTests < Test::Unit::TestCase
     assert_equal("2.1.6", version_file.version)
   end
 
-  # frameworks_by_platform
-
-  def test_frameworks_by_platform_lumberjack
-    version_file = Fixtures.lumberjack_version_file
-    assert_equal(version_file.frameworks_by_platform, {
-      :iOS => ["LumberjackSwift", "Lumberjack"],
-      :macOS => ["LumberjackSwift", "Lumberjack"],
-      :tvOS => ["LumberjackSwift", "Lumberjack"],
-      :watchOS => ["LumberjackSwift", "Lumberjack"],
-    })
+  def test_version_xcframework
+    version_file = Fixtures.xcframework_version_file
+    assert_equal("1.0.0", version_file.version)
   end
 
-  def test_frameworks_by_platform_lumberjack_filtered_platforms
-    version_file = Fixtures.lumberjack_version_file([:iOS])
+  # frameworks_by_platform
+
+  def test_frameworks_by_platform_xcframework
+    version_file = Fixtures.xcframework_version_file
     assert_equal(version_file.frameworks_by_platform, {
-      :iOS => ["LumberjackSwift", "Lumberjack"],
+      :iOS => [
+        XCFramework.new(
+          "SuperAwesome",
+          "SuperAwesome.xcframework",
+          ["ios-arm64_i386_x86_64-simulator", "ios-arm64_x86_64-maccatalyst", "ios-arm64_armv7"]
+        ),
+      ],
       :macOS => [],
       :tvOS => [],
       :watchOS => [],
     })
   end
 
-  def test_frameworks_by_platform_baddie
+  # framework_names_by_platform
+
+  def test_framework_names_by_platform_lumberjack
+    version_file = Fixtures.lumberjack_version_file
+    assert_equal(version_file.framework_names_by_platform, {
+      :iOS => ["CocoaLumberjack", "CocoaLumberjackSwift"],
+      :macOS => ["CocoaLumberjack", "CocoaLumberjackSwift"],
+      :tvOS => ["CocoaLumberjack", "CocoaLumberjackSwift"],
+      :watchOS => ["CocoaLumberjack", "CocoaLumberjackSwift"],
+    })
+  end
+
+  def test_framework_names_by_platform_lumberjack_filtered_platforms
+    version_file = Fixtures.lumberjack_version_file([:iOS])
+    assert_equal(version_file.framework_names_by_platform, {
+      :iOS => ["CocoaLumberjack", "CocoaLumberjackSwift"],
+      :macOS => [],
+      :tvOS => [],
+      :watchOS => [],
+    })
+  end
+
+  def test_framework_names_by_platform_baddie
     version_file = Fixtures.baddie_version_file
-    assert_equal(version_file.frameworks_by_platform, {
+    assert_equal(version_file.framework_names_by_platform, {
       :iOS => ["Baddie"],
+      :macOS => [],
+      :tvOS => [],
+      :watchOS => [],
+    })
+  end
+
+  def test_framework_names_by_platform_xcframework
+    version_file = Fixtures.xcframework_version_file
+    assert_equal(version_file.framework_names_by_platform, {
+      :iOS => ["SuperAwesome"],
       :macOS => [],
       :tvOS => [],
       :watchOS => [],
@@ -77,16 +118,16 @@ class VersionFileTests < Test::Unit::TestCase
   def test_platforms_by_framework_lumberjack
     version_file = Fixtures.lumberjack_version_file
     assert_equal(version_file.platforms_by_framework, {
-      "Lumberjack" => [:iOS, :macOS, :tvOS, :watchOS],
-      "LumberjackSwift" => [:iOS, :macOS, :tvOS, :watchOS],
+      "CocoaLumberjack" => [:iOS, :macOS, :tvOS, :watchOS],
+      "CocoaLumberjackSwift" => [:iOS, :macOS, :tvOS, :watchOS],
     })
   end
 
   def test_platforms_by_framework_lumberjack_filtered_platforms
     version_file = Fixtures.lumberjack_version_file([:iOS])
     assert_equal(version_file.platforms_by_framework, {
-      "Lumberjack" => [:iOS],
-      "LumberjackSwift" => [:iOS],
+      "CocoaLumberjack" => [:iOS],
+      "CocoaLumberjackSwift" => [:iOS],
     })
   end
 
@@ -95,16 +136,28 @@ class VersionFileTests < Test::Unit::TestCase
     assert_equal(version_file.platforms_by_framework, { "Baddie" => [:iOS] })
   end
 
+  def test_platforms_by_framework_xcframework_filtered_platforms
+    version_file = Fixtures.xcframework_version_file([:iOS])
+    assert_equal(version_file.platforms_by_framework, {
+      "SuperAwesome" => [:iOS],
+    })
+  end
+
   # framework_names
 
   def test_framework_names_lumberjack
     version_file = Fixtures.lumberjack_version_file
-    assert_equal(["Lumberjack", "LumberjackSwift"], version_file.framework_names)
+    assert_equal(["CocoaLumberjack", "CocoaLumberjackSwift"], version_file.framework_names)
   end
 
   def test_framework_names_baddie
     version_file = Fixtures.baddie_version_file
     assert_equal(["Baddie"], version_file.framework_names)
+  end
+
+  def test_framework_names_xcframework
+    version_file = Fixtures.xcframework_version_file
+    assert_equal(["SuperAwesome"], version_file.framework_names)
   end
 
   # number_of_frameworks
@@ -116,6 +169,11 @@ class VersionFileTests < Test::Unit::TestCase
 
   def test_number_of_frameworks_baddie
     version_file = Fixtures.baddie_version_file
+    assert_equal(1, version_file.number_of_frameworks)
+  end
+
+  def test_number_of_frameworks_xcframework
+    version_file = Fixtures.xcframework_version_file
     assert_equal(1, version_file.number_of_frameworks)
   end
 

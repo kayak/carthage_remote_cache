@@ -22,7 +22,7 @@ class VersionFile
   def platforms_by_framework
     result = Hash.new { |h, k| h[k] = [] }
     for framework_name in framework_names
-      @frameworks_by_platform.each do |platform, framework_names_in_platform|
+      framework_names_by_platform.each do |platform, framework_names_in_platform|
         if framework_names_in_platform.include?(framework_name)
           result[framework_name] << platform
         end
@@ -31,14 +31,18 @@ class VersionFile
     result
   end
 
+  def framework_names_by_platform
+    @frameworks_by_platform.map { |platform, framework| [platform, framework.map { |f| f.name }] }.to_h
+  end
+
   # Unique array of framework names.
   def framework_names
-    @frameworks_by_platform.values.flatten.uniq.sort
+    framework_names_by_platform.values.flatten.uniq.sort
   end
 
   # Total number of frameworks accross all platforms.
   def number_of_frameworks
-    @frameworks_by_platform.values.flatten.count
+    framework_names_by_platform.values.flatten.count
   end
 
   def move_to_build_dir
@@ -93,10 +97,38 @@ class VersionFile
   def parse_platform(platform)
     carthage_platform_name = platform_to_carthage_dir_string(platform)
     array = @json[carthage_platform_name]
-    if array.kind_of?(Array)
-      array.map { |entry| entry["name"] }
+    if array.kind_of?(Array) and array.count > 0
+      if array.first["linking"]
+        parse_frameworks(array)
+      elsif array.first["container"]
+        parse_xcframeworks(array)
+      else
+        raise AppError.new "Failed to parse framework #{json}"
+      end
     else
       []
     end
+  end
+
+  def parse_frameworks(array)
+    array.map { |json| Framework.parse(json) }
+  end
+
+  def parse_xcframeworks(array)
+    # Parse the array of XCFrameworks
+    xcframeworks = array.map { |json| XCFramework.parse(json) }
+
+    # Merge entries with same name, but different identifiers into one.
+    by_name = xcframeworks.reduce({}) do |hash, xcframework|
+      if found = hash[xcframework.name]
+        hash[found.name] = found.new_xcframework_by_adding_identifiers(xcframework.identifiers)
+      else
+        hash[xcframework.name] = xcframework
+      end
+      hash
+    end
+
+    # Turn back into a simple array
+    by_name.values
   end
 end

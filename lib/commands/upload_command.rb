@@ -72,9 +72,9 @@ class UploadCommand
 
     @networking.upload_version_file(carthage_dependency)
 
-    version_file.frameworks_by_platform.each do |platform, framework_names|
-      for framework_name in framework_names
-        archive_size = @api.create_and_upload_archive(carthage_dependency, framework_name, platform)
+    version_file.frameworks_by_platform.each do |platform, frameworks|
+      for framework in frameworks
+        archive_size = @api.create_and_upload_archive(carthage_dependency, framework, platform)
         @mutex.synchronize do
           @number_of_uploaded_archives += 1
           @total_archive_size += archive_size

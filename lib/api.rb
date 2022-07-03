@@ -47,13 +47,13 @@ class API
   end
 
   # @return zip archive size in Bytes
-  def create_and_upload_archive(carthage_dependency, framework_name, platform)
-    archive = CarthageArchive.new(framework_name, platform)
-    archive.create_archive(@shell)
+  def create_and_upload_archive(carthage_dependency, framework, platform)
+    archive = framework.make_archive(platform)
+    archive.compress_archive(@shell)
     archive_size = archive.archive_size
     begin
       checksum = crc32(archive.archive_path)
-      @networking.upload_framework_archive(archive.archive_path, carthage_dependency, framework_name, platform, checksum)
+      @networking.upload_framework_archive(archive.archive_path, carthage_dependency, framework.name, platform, checksum)
     ensure
       archive.delete_archive
     end
@@ -62,10 +62,10 @@ class API
 
   # @return zip archive size in Bytes
   # @raise AppError if download or checksum validation fails
-  def download_and_unpack_archive(carthage_dependency, framework_name, platform)
-    result = @networking.download_framework_archive(carthage_dependency, framework_name, platform)
+  def download_and_unpack_archive(carthage_dependency, framework, platform)
+    result = @networking.download_framework_archive(carthage_dependency, framework, platform)
     if result.nil?
-      raise AppError.new, "Failed to download framework #{carthage_dependency} – #{framework_name} (#{platform}). Please `upload` the framework first."
+      raise AppError.new, "Failed to download framework #{carthage_dependency} – #{framework.name} (#{platform}). Please `upload` the framework first."
     end
 
     archive = result[:archive]

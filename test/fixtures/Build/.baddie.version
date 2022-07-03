@@ -9,7 +9,8 @@
   "iOS" : [
     {
       "name" : "Baddie",
-      "hash" : "1c07fe26a5e8e1b64d58b39130aaea817af22ad8fb5febcca1725f8aec3cd218"
+      "hash" : "1c07fe26a5e8e1b64d58b39130aaea817af22ad8fb5febcca1725f8aec3cd218",
+      "linking": "dynamic"
     }
   ]
 }

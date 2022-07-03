@@ -3,8 +3,8 @@ require "carthage_remote_cache"
 require "fixtures"
 require "mocha/test_unit"
 
-class CarthageArchiveTests < Test::Unit::TestCase
-  def test_create_archive
+class FrameworkCarthageArchiveTests < Test::Unit::TestCase
+  def test_compress_archive
     shell = mock("shell")
 
     shell
@@ -18,9 +18,9 @@ class CarthageArchiveTests < Test::Unit::TestCase
       .with(fixtures_expected_input_archive_paths, "Framework1-iOS.zip")
       .add_side_effect(archive_side_effect)
 
-    archive = CarthageArchive.new("Framework1", :iOS)
+    archive = FrameworkCarthageArchive.new("Framework1", :iOS)
     begin
-      archive.create_archive(shell, FIXTURES_BUILD_DIR)
+      archive.compress_archive(shell, FIXTURES_BUILD_DIR)
       assert_true(File.exist?("Framework1-iOS.zip"))
       assert_equal(5, archive.archive_size)
     ensure
@@ -28,10 +28,10 @@ class CarthageArchiveTests < Test::Unit::TestCase
     end
   end
 
-  def test_create_archive_invalid_framework
-    archive = CarthageArchive.new("InvalidFramework", :iOS)
+  def test_compress_archive_invalid_framework
+    archive = FrameworkCarthageArchive.new("InvalidFramework", :iOS)
     assert_raises MissingFrameworkDirectoryError do
-      archive.create_archive(nil, FIXTURES_BUILD_DIR)
+      archive.compress_archive(nil, FIXTURES_BUILD_DIR)
     end
   end
 

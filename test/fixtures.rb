@@ -68,5 +68,19 @@ class Fixtures
     def bcsymbolmap_invalid_uuid
       "XXXXXXXX-D848-37DF-AB4B-6A35F51E005A"
     end
+
+    # @!group XCFramework
+
+    def xcframework_version_file(platforms = PLATFORMS)
+      VersionFile.new(xcframework_version_path, platforms)
+    end
+
+    def xcframework_version_path
+      File.join(FIXTURES_BUILD_DIR, ".XCFramework.version")
+    end
+
+    def xcframework_dir_path
+      File.join(FIXTURES_BUILD_DIR, "SuperAwesome.xcframework")
+    end
   end
 end

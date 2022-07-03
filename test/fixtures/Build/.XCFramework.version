@@ -1,0 +1,32 @@
+{
+  "Mac" : [
+
+  ],
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
+
+  ],
+  "commitish" : "1.0.0",
+  "iOS" : [
+    {
+      "hash" : "c9896c80f66eb6c8ea9bfc81684c2d76f02c99348be4b43cb7974ae4135d5064",
+      "name" : "SuperAwesome",
+      "container" : "SuperAwesome.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "hash" : "f5dfd0894a671f15eb4b7cbb9d5cc696f64d9f77355cf1ece6c3a9fedaaffc57",
+      "name" : "SuperAwesome",
+      "container" : "SuperAwesome.xcframework",
+      "identifier" : "ios-arm64_x86_64-maccatalyst"
+    },
+    {
+      "hash" : "122dc4c3d9bf356f8e601e9a510d3a4b720fd968499daf506089700c3fdcfa61",
+      "name" : "SuperAwesome",
+      "container" : "SuperAwesome.xcframework",
+      "identifier" : "ios-arm64_armv7"
+    }
+  ]
+}

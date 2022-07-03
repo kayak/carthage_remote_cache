@@ -8,7 +8,8 @@ class UtilsTests < Test::Unit::TestCase
 
   def test_crc32
     checksum = crc32(Fixtures.framework1_version_path)
-    assert_equal("92fa717d", checksum)
+    # Get the expected value by running `crc32 test/fixtures/Build/.Framework1.version`
+    assert_equal("cd8fa26b", checksum)
   end
 
   # quote

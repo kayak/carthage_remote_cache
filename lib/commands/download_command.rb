@@ -76,9 +76,9 @@ class DownloadCommand
     version_file = @networking.download_version_file(carthage_dependency, @platforms)
     raise AppError.new, "Version file #{carthage_dependency.version_filename} is not present on the server, please run `carthagerc upload` first" if version_file.nil?
 
-    version_file.frameworks_by_platform.each do |platform, framework_names|
-      for framework_name in framework_names
-        archive_size = @api.download_and_unpack_archive(carthage_dependency, framework_name, platform)
+    version_file.frameworks_by_platform.each do |platform, frameworks|
+      for framework in frameworks
+        archive_size = @api.download_and_unpack_archive(carthage_dependency, framework, platform)
         @mutex.synchronize do
           @number_of_downloaded_archives += 1
           @total_archive_size += archive_size

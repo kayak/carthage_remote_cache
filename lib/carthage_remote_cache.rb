@@ -3,6 +3,10 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require "api"
 require "carthage_archive"
+require "framework_carthage_archive"
+require "xcframework_carthage_archive"
+require "framework"
+require "xcframework"
 require "carthage_dependency"
 require "constants"
 require "configuration"

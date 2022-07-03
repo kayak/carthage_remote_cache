@@ -64,13 +64,13 @@ class Networking
   #  Archives
 
   # @return Hash with CarthageArchive and checksum or nil
-  def download_framework_archive(carthage_dependency, framework_name, platform)
-    url = new_framework_url(carthage_dependency, framework_name, platform)
+  def download_framework_archive(carthage_dependency, framework, platform)
+    url = new_framework_url(carthage_dependency, framework.name, platform)
     archive = perform_network_request do
       $LOG.debug("Downloading framework from #{url}")
       RestClient.get(url) do |response, request, result|
         if response.code == 200
-          archive = CarthageArchive.new(framework_name, platform)
+          archive = framework.make_archive(platform)
           File.write(archive.archive_path, response.to_s)
           { :archive => archive, :checksum => response.headers[ARCHIVE_CHECKSUM_HEADER_REST_CLIENT] }
         else
