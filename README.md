@@ -1,6 +1,6 @@
 # CarthageRemoteCache
 
-[![Build Status](https://travis-ci.org/kayak/carthage_remote_cache.svg?branch=master)](https://travis-ci.org/kayak/carthage_remote_cache)
+[![Test Status](https://github.com/kayak/carthage_remote_cache/actions/workflows/ruby.yml/badge.svg)](https://github.com/kayak/carthage_remote_cache/actions/workflows/ruby.yml)
 [![Gem Version](https://badge.fury.io/rb/carthage_remote_cache.svg)](https://badge.fury.io/rb/carthage_remote_cache)
 
 Centralized cache to serve Carthage frameworks. Useful for distributed CI setup with several build machines. It's aware of your `xcodebuild` and `swift` versions and builds on top of Carthage's `.xyz.version` file mechanism.
