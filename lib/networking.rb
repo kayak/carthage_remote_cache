@@ -148,7 +148,7 @@ class Networking
       begin
         result = yield
       rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError,
-             Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+             Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError, SocketError => e
         if retries_remaining > 0
           $LOG.warn("Network request failed - remaining retries: #{retries_remaining}, sleeping for: #{sleep_time_seconds}s, error: #{e.message}")
           sleep(sleep_time_seconds)
