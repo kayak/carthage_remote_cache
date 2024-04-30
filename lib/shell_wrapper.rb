@@ -25,7 +25,7 @@ class ShellWrapper
   end
 
   def archive(input_paths, output_path)
-    sh("zip -r #{quote output_path} #{quote input_paths}")
+    sh("zip --symlinks -r #{quote output_path} #{quote input_paths}")
   end
 
   def unpack(archive_path)
