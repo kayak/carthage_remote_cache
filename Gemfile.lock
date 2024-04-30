@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    carthage_remote_cache (0.0.12)
+    carthage_remote_cache (0.0.13)
       concurrent-ruby (~> 1.0.5)
       rack (>= 2.0.6, < 3.1.0)
       rest-client (~> 2.0.2)
