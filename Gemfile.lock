@@ -3,7 +3,7 @@ PATH
   specs:
     carthage_remote_cache (0.0.13)
       concurrent-ruby (~> 1.0.5)
-      rack (>= 2.0.6, < 3.1.0)
+      rack (>= 2.0.6, < 3.2.0)
       rest-client (~> 2.0.2)
       sinatra (>= 2.0.4, < 3.1.0)
 
@@ -52,7 +52,7 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    rack (2.2.9)
+    rack (2.2.11)
     rack-protection (3.0.6)
       rack
     rake (13.2.1)

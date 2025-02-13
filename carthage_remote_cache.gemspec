@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "test-unit", "~> 3.2.7"
 
   spec.add_runtime_dependency "concurrent-ruby", "~> 1.0.5"
-  spec.add_runtime_dependency "rack", ">= 2.0.6", "< 3.1.0"
+  spec.add_runtime_dependency "rack", ">= 2.0.6", "< 3.2.0"
   spec.add_runtime_dependency "rest-client", "~> 2.0.2"
   spec.add_runtime_dependency "sinatra", ">= 2.0.4", "< 3.1.0"
 end
